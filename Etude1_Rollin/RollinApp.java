@@ -177,6 +177,7 @@ public class RollinApp{
             test2(Integer.parseInt(args[0]));
         }
         catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Usage: java RollinApp <numTests>");
         }
     }

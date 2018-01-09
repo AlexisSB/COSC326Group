@@ -14,10 +14,12 @@ public class MyRollin extends Rollin {
     public static Random r = new Random();
     /** Controls whether or not to print debug text. */
     public static boolean DEBUG = false;
-
     /** Return value for a few methods when a set of indicies could
      * not be found. */
     private static final int[] NOT_FOUND = { -1, -1, -1 };
+    /** Return value for suggestReplaceIndex indicating there was no suggestion
+     * for which die to replace. */
+    private static final int NO_SUGGESTION = NO_REPLACE - 1;
     
     public MyRollin(int[] dice){
         super(dice);
@@ -45,20 +47,17 @@ public class MyRollin extends Rollin {
 
         // If we do not have two sets already...
         if (!isComplete()) {
-            // Initially just replace a random die.
-            int replaceIndex = r.nextInt(6);
+            // Initially just choose a random die.
+            int replaceIndex = randomDie(roll);
 
             // Try to find a set and the indicies of that set and the indicies
-            // that do not belong to that set.
-            int[] set = new int[3];
-            int[] nonSet = new int[3];
-            
+            // that do not belong to that set.            
             // Try to find a set and their indicies.
-            set = findSet();
+            int[] set = findSet();
             
             // If a set of indentical die values was found...
             if (set != NOT_FOUND) {
-                printDebug("Set of identical values found.");
+                printDebug("Set found.");
             } 
             else {
                 // Otherwise if neither a set of identical die values or a set 
@@ -69,25 +68,24 @@ public class MyRollin extends Rollin {
                 return replaceIndex;
             } 
 
-            // Get the non-set indicies.
-            nonSet = getNonSetIndicies(set);
+            // Find the non-set indicies.
+            int[] nonSet = getNonSetIndicies(set);
 
             printDebug("Found set indicies: " + Arrays.toString(set));
             printDebug("Found non-set indicies: " + 
                         Arrays.toString(nonSet));
             
-            // We can ignore the dice reffered to by setIndicies as they 
-            // already form a set.
-            // We should now try to make a set with the other 3 dice.
-            int suggestedReplaceIndex = suggestReplaceIndex(nonSet);
+            int suggestedReplaceIndex = suggestReplaceIndex(nonSet, roll);
 
             printDebug(""); // Formatting.
-
-            // Return index of the die to replace.
-            return (suggestedReplaceIndex != -1) ? suggestedReplaceIndex : replaceIndex;
+            
+            // If there was no suggestion, return the random die index. 
+            // Otherwise return the suggested index.
+            return (suggestedReplaceIndex == NO_SUGGESTION) ? 
+                replaceIndex : suggestedReplaceIndex;
         }
 
-        // Return value indicating that no dice were replaced.
+        // Return value indicating that no dice should be replaced.
         return NO_REPLACE;
     }
 
@@ -100,6 +98,21 @@ public class MyRollin extends Rollin {
         if (DEBUG) {
             System.out.println(msg);
         }
+    }
+
+    /**
+     * Chooses a random die index, where the die value at that index is not
+     * the same as the roll die value.
+     * @param roll The current roll.
+     * @return The selected die index. */
+    private int randomDie(int roll) {
+        int i = r.nextInt(6);
+
+        while (dice[i] == roll) {
+            i = r.nextInt(6);
+        }
+
+        return i;
     }
 
     /**
@@ -119,9 +132,9 @@ public class MyRollin extends Rollin {
         return NOT_FOUND;
     }
 
-
     /**
-     * Gets the indicies of the dice that do not belong to the given set.
+     * Gets the indicies of all the dice, except for those that are
+     * contained in the given set.
      * @param set The indicies of the set that was found.
      * @return The indicies of the dice that are not in set */
     private final int[] getNonSetIndicies(int[] set) {
@@ -153,59 +166,140 @@ public class MyRollin extends Rollin {
      * Tries to make a set of 2 identical or consecutive die values, and then
      * suggests the remaining die value as the die to replace.
      * @param x The resulting array from getNonSetIndicies().
-     * @return The index of the die that is suggested to be replaced.
+     * @param roll The current roll that was given to handleRoll().
+     * @return The index of the die that is suggested to be replaced, 
+     * NO_REPLACE if no die should be replaced, or NO_SUGGESTION.
      */
-    private final int suggestReplaceIndex(int[] x) {
-        // Check if there is 2 of a kind and return the index of the 
-        // die that is not part of the pair.
-        boolean foundPair = false;
-        int replaceIndex = -1;
+    private int suggestReplaceIndex(int[] x, int roll) {
+        int replaceIndex = NO_SUGGESTION;
 
-        if (dice[x[0]] == dice[x[1]]) {
-            replaceIndex = x[2];
-            foundPair = true;
-        } 
-        else if (dice[x[0]] == dice[x[2]]) {
-            replaceIndex = x[1];   
-            foundPair = true;
-        } 
-        else if (dice[x[1]] == dice[x[2]]) {
-            replaceIndex = x[0];
-            foundPair = true;
+        // Try to find a swap that will result in a higher 
+        // probability of forming a set than the current selected index.
+        // I.e. If we have 2 pairs (identical & consecutive.), 
+        // e.g. { 1, 2, 2 }, and replacing one of these with the current roll
+        // would form a set, we should replace that die. Otherwise, we should
+        // not replace any dice.  
+        if (findPairIdentical(x) != NOT_FOUND &&
+            findPairConsecutive(x) != NOT_FOUND) {
+            if (isSet(roll, dice[x[1]], dice[x[2]])) {
+                return x[0];
+            } 
+            else if (isSet(dice[x[0]], roll, dice[x[2]])) {
+                return x[1];
+            }
+            else if (isSet(dice[x[0]], dice[x[1]], roll)) {
+                return x[2];
+            }
+
+            return NO_REPLACE;
         }
-        // DEBUG
-        if (foundPair) {
-            printDebug("Found pair in non-set dice," + 
-                        " replacing die at index " + replaceIndex);
-        } else {
-            // Check if there are 2 consecutive numbers and return the 
-            // index of the die that is not consecutive.
-            boolean foundConsec = false;
 
-            if (Math.abs(dice[x[0]] - dice[x[1]]) == 1) {
-                replaceIndex = x[2];
-                foundConsec = true;
-            } 
-            else if (Math.abs(dice[x[0]] - dice[x[2]]) == 1) {
-                replaceIndex = x[1];
-                foundConsec = true;
-            } 
-            else if (Math.abs(dice[x[1]] - dice[x[2]]) == 1) {
-                replaceIndex = x[0];
-                foundConsec = true;
-            }
-            // DEBUG
-            if (foundConsec) {
-                printDebug("Found consecutive dice, replacing die at index " + 
-                            replaceIndex);
-            } else {
-                printDebug("No suitable candidates found. Replacing die at " +
-                            "index " + replaceIndex);
-            }
+        // Pairs of indicies which indicate the index of the pairs if
+        // found.
+        int[] pair = findPair(x); 
+        
+        if (pair == NOT_FOUND) {
+            return NO_SUGGESTION;
+        }
+
+        // If a pair was found, we should try to make that pair into a
+        // a set of 3. So for replaceIndex we choose the index of the die 
+        // that was not in the pair.
+        if (pair[0] == x[0] && pair[1] == x[1]) {
+            replaceIndex = x[2];
+        } 
+        else if (pair[0] == x[0] && pair[1] == x[2]) {
+            replaceIndex = x[1];
+        } 
+        else if (pair[0] == x[1] && pair[1] == x[2]) {
+            replaceIndex = x[0];
         }
 
         return replaceIndex;
     }   
+
+    /** Given a set of 3 indicies, tries to find either:
+     * a) two indentical die values.
+     * b) two consecutive die values. 
+     * and returns the set of indicies associated with those die values.
+     * @param set The set of three indicies to look at.
+     * @return The indicies of the dice in the pair if found, otherwise returns
+     * NOT_FOUND.
+     */
+    private final int[] findPair(int[] set) {
+        // TODO: find pairs that have a difference of two e.g. { 1, 3}
+        int[] pair = findPairIdentical(set);
+        return (pair != NOT_FOUND) ? pair : findPairConsecutive(set);
+    }
+
+    /** Given a set of 3 indicies, tries to find two indentical die values.
+     * and returns the set of indicies associated with those die values.
+     * @param set The set of three indicies to look at.
+     * @return The indicies of the dice in the pair if found, otherwise returns
+     * NOT_FOUND.
+     */
+    private final int[] findPairIdentical(int[] set) {
+        // Check if there are 2 identical die values.
+        if (dice[set[0]] == dice[set[1]]) {
+            return new int[] { set[0], set[1] };
+        } 
+        else if (dice[set[0]] == dice[set[2]]) {
+            return new int[] { set[0], set[2] };
+        } 
+        else if (dice[set[1]] == dice[set[2]]) {
+            return new int[] { set[1], set[2] };
+        }
+
+        // Return not found value.
+        return NOT_FOUND;
+    }
+    
+    /** Given a set of 3 indicies, tries to find two consecutive die values. 
+     * and returns the set of indicies associated with those die values.
+     * @param set The set of three indicies to look at.
+     * @return The indicies of the dice in the pair if found, otherwise returns
+     * NOT_FOUND.
+     */
+    private final int[] findPairConsecutive(int[] set) {
+        // Check if there are 2 consecutive die values...
+        if (Math.abs(dice[set[0]] - dice[set[1]]) == 1) {
+            return new int[] { set[0], set[1] };
+        } 
+        else if (Math.abs(dice[set[0]] - dice[set[2]]) == 1) {
+            return new int[] { set[0], set[2] };
+        } 
+        else if (Math.abs(dice[set[1]] - dice[set[2]]) == 1) {
+            return new int[] { set[1], set[2] };
+        }
+
+        // Return not found value.
+        return NOT_FOUND;
+    }
+
+    /**
+     * Determine whether the given dice form a set.
+     * 
+     * @param a The first dice value.
+     * @param b The second dice value.
+     * @param c The third dice value.
+     * @return true if the dice form a set, false otherwise.
+     */
+    public boolean isSet(int a, int b, int c) {
+        // All three dice the same is a set
+        if (a == b && b == c) {
+            return true;
+        }
+        // If not all three are the same, then any two the same is not a set
+        if (a == b || a == c || b == c) {
+            return false;
+        }
+        
+        // If all three are different and largest minus smallest is 2 then it
+        // is a set, otherwise not.
+        int max = Math.max(a, Math.max(b, c));
+        int min = Math.min(a, Math.min(b, c));
+        return max - min == 2;
+    }
 
 } 
 
