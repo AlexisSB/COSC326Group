@@ -175,12 +175,12 @@ public class MyRollin extends Rollin {
 
         // Try to find a swap that will result in a higher 
         // probability of forming a set than the current selected index.
-        // I.e. If we have 2 pairs (identical & consecutive.), 
-        // e.g. { 1, 2, 2 }, and replacing one of these with the current roll
-        // would form a set, we should replace that die. Otherwise, we should
-        // not replace any dice.  
-        if (findPairIdentical(x) != NOT_FOUND &&
-            findPairConsecutive(x) != NOT_FOUND) {
+        // I.e. If we have 2 pairs (identical & consecutive or indentical
+        // & separated), e.g. { 1, 2, 2 } or { 1, 1, 3 }, and replacing one of
+        // these with the current roll would form a set, we should replace that
+        // die. Otherwise, we should not replace any dice.
+        if ((findPairIdentical(x) != NOT_FOUND && findPairConsecutive(x) != NOT_FOUND) ||
+            (findPairIdentical(x) != NOT_FOUND && findPairSeparated(x) != NOT_FOUND)) {
             if (isSet(roll, dice[x[1]], dice[x[2]])) {
                 return x[0];
             } 
@@ -194,8 +194,6 @@ public class MyRollin extends Rollin {
             return NO_REPLACE;
         }
 
-        // Pairs of indicies which indicate the index of the pairs if
-        // found.
         int[] pair = findPair(x); 
         
         if (pair == NOT_FOUND) {
@@ -218,16 +216,16 @@ public class MyRollin extends Rollin {
         return replaceIndex;
     }   
 
-    /** Given a set of 3 indicies, tries to find either:
+    /** Given a set of 3 indicies, tries to find any of the following:
      * a) two indentical die values.
      * b) two consecutive die values. 
+     * c) two die values that have a difference of two.
      * and returns the set of indicies associated with those die values.
      * @param set The set of three indicies to look at.
      * @return The indicies of the dice in the pair if found, otherwise returns
      * NOT_FOUND.
      */
     private final int[] findPair(int[] set) {
-        // TODO: find pairs that have a difference of two e.g. { 1, 3}
         int[] pair = findPairIdentical(set);
 
         if (pair != NOT_FOUND) {

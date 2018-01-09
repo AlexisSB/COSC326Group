@@ -85,8 +85,8 @@ public class RollinApp{
             maxExecTime = (total > maxExecTime) ? total : maxExecTime;
         }
 
-        avgRolls = rolls / numTests;
-        avgExecTime = execTime / numTests;
+        avgRolls = (double) rolls / numTests;
+        avgExecTime = (double) execTime / numTests;
 
         System.out.println("Test results:\n" +
                             "Total # of rolls: " + rolls + "\n" +
@@ -101,12 +101,12 @@ public class RollinApp{
         System.out.format("Frequencies of # of Rolls:\n" + 
                             "0\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10+\n" + 
                             "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n\n",
-                            rollFrequencies[0] / ((double) numTests), rollFrequencies[1] / ((double) numTests),
-                            rollFrequencies[2] / ((double) numTests), rollFrequencies[3] / ((double) numTests),
-                            rollFrequencies[4] / ((double) numTests), rollFrequencies[5] / ((double) numTests),
-                            rollFrequencies[6] / ((double) numTests), rollFrequencies[7] / ((double) numTests),
-                            rollFrequencies[8] / ((double) numTests), rollFrequencies[9] / ((double) numTests),
-                            rollFrequencies[10] / ((double) numTests));
+                            rollFrequencies[0] / (double) numTests, rollFrequencies[1] / (double) numTests,
+                            rollFrequencies[2] / (double) numTests, rollFrequencies[3] / (double) numTests,
+                            rollFrequencies[4] / (double) numTests, rollFrequencies[5] / (double) numTests,
+                            rollFrequencies[6] / (double) numTests, rollFrequencies[7] / (double) numTests,
+                            rollFrequencies[8] / (double) numTests, rollFrequencies[9] / (double) numTests,
+                            rollFrequencies[10] / (double) numTests);
     }
 
     public static void test2(int numTests) {
@@ -182,8 +182,8 @@ public class RollinApp{
             maxExecTime = (total > maxExecTime) ? total : maxExecTime;
         }
 
-        avgRolls = rolls / numTests;
-        avgExecTime = execTime / numTests;
+        avgRolls = (double) rolls / numTests;
+        avgExecTime = (double) execTime / numTests;
 
         System.out.println("Test results:\n" +
                             "Total # of rolls: " + rolls + "\n" +
@@ -198,12 +198,12 @@ public class RollinApp{
         System.out.format("Frequencies of # of Rolls:\n" + 
                             "0\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10+\n" + 
                             "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n\n",
-                            rollFrequencies[0] / ((double) numTests), rollFrequencies[1] / ((double) numTests),
-                            rollFrequencies[2] / ((double) numTests), rollFrequencies[3] / ((double) numTests),
-                            rollFrequencies[4] / ((double) numTests), rollFrequencies[5] / ((double) numTests),
-                            rollFrequencies[6] / ((double) numTests), rollFrequencies[7] / ((double) numTests),
-                            rollFrequencies[8] / ((double) numTests), rollFrequencies[9] / ((double) numTests),
-                            rollFrequencies[10] / ((double) numTests));
+                            rollFrequencies[0] / (double) numTests, rollFrequencies[1] / (double) numTests,
+                            rollFrequencies[2] / (double) numTests, rollFrequencies[3] / (double) numTests,
+                            rollFrequencies[4] / (double) numTests, rollFrequencies[5] / (double) numTests,
+                            rollFrequencies[6] / (double) numTests, rollFrequencies[7] / (double) numTests,
+                            rollFrequencies[8] / (double) numTests, rollFrequencies[9] / (double) numTests,
+                            rollFrequencies[10] / (double) numTests);
     }
 
     public static void main (String[] args){
