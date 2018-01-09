@@ -78,7 +78,7 @@ public class MyRollin extends Rollin {
             int suggestedReplaceIndex = suggestReplaceIndex(nonSet, roll);
 
             printDebug(""); // Formatting.
-            
+
             // If there was no suggestion, return the random die index. 
             // Otherwise return the suggested index.
             return (suggestedReplaceIndex == NO_SUGGESTION) ? 
@@ -229,7 +229,13 @@ public class MyRollin extends Rollin {
     private final int[] findPair(int[] set) {
         // TODO: find pairs that have a difference of two e.g. { 1, 3}
         int[] pair = findPairIdentical(set);
-        return (pair != NOT_FOUND) ? pair : findPairConsecutive(set);
+
+        if (pair != NOT_FOUND) {
+            return pair;
+        }
+
+        pair = findPairConsecutive(set);
+        return (pair != NOT_FOUND) ? pair : findPairSeparated(set);
     }
 
     /** Given a set of 3 indicies, tries to find two indentical die values.
@@ -269,6 +275,31 @@ public class MyRollin extends Rollin {
             return new int[] { set[0], set[2] };
         } 
         else if (Math.abs(dice[set[1]] - dice[set[2]]) == 1) {
+            return new int[] { set[1], set[2] };
+        }
+
+        // Return not found value.
+        return NOT_FOUND;
+    }
+    
+    /** Given a set of 3 indicies, tries to find a separated pair,
+     * (where a separated pair is a set of two numbers that have a difference
+     * of two and given the right third number, would create a set of three
+     * consecutive numbers. e.g. { 1, 3}) and returns the set of indicies 
+     * associated with those die values. 
+     * @param set The set of three indicies to look at.
+     * @return The indicies of the dice in the pair if found, otherwise returns
+     * NOT_FOUND.
+     */
+    private final int[] findPairSeparated(int[] set) {
+        // Check if there are 2 consecutive die values...
+        if (Math.abs(dice[set[0]] - dice[set[1]]) == 2) {
+            return new int[] { set[0], set[1] };
+        } 
+        else if (Math.abs(dice[set[0]] - dice[set[2]]) == 2) {
+            return new int[] { set[0], set[2] };
+        } 
+        else if (Math.abs(dice[set[1]] - dice[set[2]]) == 2) {
             return new int[] { set[1], set[2] };
         }
 

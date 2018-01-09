@@ -8,7 +8,8 @@ import java.util.*;
 
 public class RollinApp{
     // Create random instance and seed it for testing.
-    private static Random r = new Random(2018);
+    private static final int SEED = 2018;
+    private static Random r = new Random(SEED);
     private static int TEST_LIMIT = 9999;
 
     public static void test1(int numTests) {
@@ -21,6 +22,9 @@ public class RollinApp{
         int minRolls = 999;
         int maxRolls = 0;
         double avgRolls = 0;
+        // Array containing the frequencies of number of rolls, the last element is for 
+        // 10+ rolls.
+        int[] rollFrequencies = new int[11];
         long execTime = 0;
         long minExecTime = 999;
         long maxExecTime = 0;
@@ -67,10 +71,15 @@ public class RollinApp{
                 System.out.println("Test exceeded maximum number of rolls!");
             }
 
+            if (n >= 10) {
+                rollFrequencies[10]++;
+            } else {
+                rollFrequencies[n]++;
+            }
 
             rolls += n;
             minRolls = (n < minRolls) ? n : minRolls;
-            maxRolls = (n > maxRolls) ? n : maxRolls;
+            maxRolls = (n > maxRolls) ? n : maxRolls;            
             execTime += total;            
             minExecTime = (total < minExecTime) ? total : minExecTime;
             maxExecTime = (total > maxExecTime) ? total : maxExecTime;
@@ -88,6 +97,16 @@ public class RollinApp{
                             "Min. exec. time: " + minExecTime + "\n" + 
                             "Max. exec. time: " + maxExecTime + "\n" +
                             "Avg. exec. time: " + avgExecTime + "\n");
+
+        System.out.format("Frequencies of # of Rolls:\n" + 
+                            "0\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10+\n" + 
+                            "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n\n",
+                            rollFrequencies[0] / ((double) numTests), rollFrequencies[1] / ((double) numTests),
+                            rollFrequencies[2] / ((double) numTests), rollFrequencies[3] / ((double) numTests),
+                            rollFrequencies[4] / ((double) numTests), rollFrequencies[5] / ((double) numTests),
+                            rollFrequencies[6] / ((double) numTests), rollFrequencies[7] / ((double) numTests),
+                            rollFrequencies[8] / ((double) numTests), rollFrequencies[9] / ((double) numTests),
+                            rollFrequencies[10] / ((double) numTests));
     }
 
     public static void test2(int numTests) {
@@ -100,6 +119,9 @@ public class RollinApp{
         int minRolls = 999;
         int maxRolls = 0;
         double avgRolls = 0;
+        // Array containing the frequencies of number of rolls, the last element is for 
+        // 10+ rolls.
+        int[] rollFrequencies = new int[11];
         long execTime = 0;
         long minExecTime = 999;
         long maxExecTime = 0;
@@ -146,6 +168,11 @@ public class RollinApp{
                 System.out.println("Test exceeded maximum number of rolls!");
             }
 
+            if (n >= 10) {
+                rollFrequencies[10]++;
+            } else {
+                rollFrequencies[n]++;
+            }
 
             rolls += n;
             minRolls = (n < minRolls) ? n : minRolls;
@@ -167,12 +194,25 @@ public class RollinApp{
                             "Min. exec. time: " + minExecTime + "\n" + 
                             "Max. exec. time: " + maxExecTime + "\n" +
                             "Avg. exec. time: " + avgExecTime + "\n");
+
+        System.out.format("Frequencies of # of Rolls:\n" + 
+                            "0\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10+\n" + 
+                            "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n\n",
+                            rollFrequencies[0] / ((double) numTests), rollFrequencies[1] / ((double) numTests),
+                            rollFrequencies[2] / ((double) numTests), rollFrequencies[3] / ((double) numTests),
+                            rollFrequencies[4] / ((double) numTests), rollFrequencies[5] / ((double) numTests),
+                            rollFrequencies[6] / ((double) numTests), rollFrequencies[7] / ((double) numTests),
+                            rollFrequencies[8] / ((double) numTests), rollFrequencies[9] / ((double) numTests),
+                            rollFrequencies[10] / ((double) numTests));
     }
 
     public static void main (String[] args){
         try {
             System.out.println("Running test for myRollin");
             test1(Integer.parseInt(args[0]));
+
+            // Reset the random instance
+            r = new Random(SEED);
             System.out.println("Running test for myRollinBrute");
             test2(Integer.parseInt(args[0]));
         }
