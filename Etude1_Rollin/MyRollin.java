@@ -1,5 +1,7 @@
 package rollin;
-import java.util.*;
+
+import java.util.Random;
+import java.util.Arrays;
 
 /**
  * Implementation of the abstract class Rollin. 
@@ -7,16 +9,18 @@ import java.util.*;
  */
 public class MyRollin extends Rollin {
 
+    /*Random generator for the class.*/
     public static Random r = new Random();
+    /* Variable indicates no dice should be replaced.*/
     private static final int NO_REPLACE = -1;
+    /* The number of sides on the dice.*/
     private static final int DICE_SIZE = 6;
-    /** Return value for a few methods when a set of indicies could
-     * not be found. */
+    /* Variable indicates a set of indicies could not be found. */
     private static final int[] NOT_FOUND = { -1, -1, -1 };
     
     /**
      * Constructor for MyRollin.
-     *
+     * 
      * @param dice An array of six values from 1 to 6.
      */
     public MyRollin(int[] dice){
@@ -61,7 +65,7 @@ public class MyRollin extends Rollin {
         if (set != NOT_FOUND) {          
             // Get the set of indices for the remaining dice that are not part
             // of the above set.
-            int[] x = getNonSetIndicies(set);
+            int[] remainingDice = getNonSetIndicies(set);
             
             // Check if we have the optimal case (the remaining dice can make 
             // two pairs), and if we do, we wait for one of the dice that we
@@ -69,28 +73,30 @@ public class MyRollin extends Rollin {
             // pairs, we have a 2/6 chance of rolling a die that we need on 
             // the next turn (we can make either a set of 3 identical values
             // or 3 consecutive values).
-            if ((findPairIdentical(x) != NOT_FOUND && findPairConsecutive(x) != NOT_FOUND) ||
-                (findPairIdentical(x) != NOT_FOUND && findPairSeparated(x) != NOT_FOUND)) {
+            if ((findPairIdentical(remainingDice) != NOT_FOUND
+                 && findPairConsecutive(remainingDice) != NOT_FOUND)
+                ||(findPairIdentical(remainingDice) != NOT_FOUND
+                   && findPairSeparated(remainingDice) != NOT_FOUND)) {
                 return NO_REPLACE;
             } 
 
             // Otherwise if we do not have the optimal case but we have at 
             // least one set in our hand, we are guaranteed to have a pair 
             // among the remaining dice.
-            int[] pair = findPair(x); 
+            int[] pair = findPair(remainingDice); 
 
             // After finding the pair, we should try to make that pair into a
             // a set of 3. So we choose the index of the die that is not part 
             // of that pair. 
-            if (pair[0] == x[0] && pair[1] == x[1]) {
-                return x[2];
+            if (pair[0] == remainingDice[0] && pair[1] == remainingDice[1]) {
+                return remainingDice[2];
             } 
-            else if (pair[0] == x[0] && pair[1] == x[2]) {
-                return x[1];
+            else if (pair[0] == remainingDice[0] && pair[1] == remainingDice[2]) {
+                return remainingDice[1];
             } 
-            // else if (pair[0] == x[1] && pair[1] == x[2]) {
+            // else if (pair[0] == remainingDice[1] && pair[1] == remainingDice[2]) {
             else {
-                return x[0];                
+                return remainingDice[0];                
             }
         } 
         // Otherwise if there are no sets in the current hand we choose 
