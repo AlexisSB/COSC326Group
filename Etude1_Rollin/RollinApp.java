@@ -10,7 +10,7 @@ public class RollinApp{
     // Create random instance and seed it for testing.
     private static final int SEED = 2018;
     private static Random r = new Random(SEED);
-    private static int TEST_LIMIT = 9999;
+    private static int TEST_LIMIT = 999;
 
     public static void test1(int numTests) {
         if (numTests < 1) {
@@ -57,8 +57,8 @@ public class RollinApp{
                 roll = r.nextInt(6) + 1;
                 replaceIndex = testObj.handleRoll(roll);
 
-                if (replaceIndex != testObj.NO_REPLACE) {
-                    testObj.replace(replaceIndex, roll);
+                if (0 <= replaceIndex && replaceIndex < 6) {
+                    testObj.dice[replaceIndex] = roll;
                 }
 
                 n++;
@@ -69,6 +69,7 @@ public class RollinApp{
 
             if (n >= TEST_LIMIT) {
                 System.out.println("Test exceeded maximum number of rolls!");
+                return;
             }
 
             if (n >= 10) {
@@ -154,8 +155,8 @@ public class RollinApp{
                 roll = r.nextInt(6) + 1;
                 replaceIndex = testObj.handleRoll(roll);
 
-                if (replaceIndex != testObj.NO_REPLACE) {
-                    testObj.replace(replaceIndex, roll);
+                if (0 <= replaceIndex && replaceIndex < 6) {
+                    testObj.dice[replaceIndex] = roll;
                 }
 
                 n++;
@@ -166,6 +167,7 @@ public class RollinApp{
 
             if (n >= TEST_LIMIT) {
                 System.out.println("Test exceeded maximum number of rolls!");
+                return;
             }
 
             if (n >= 10) {
