@@ -38,7 +38,7 @@ public abstract class Player {
      * 
      * @return the cards you wish to discard
      */
-    public abstract ArrayList<PlayedCard> discard();
+    public abstract ArrayList<Card> discard();
     
     
     /**
