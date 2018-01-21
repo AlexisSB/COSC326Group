@@ -91,7 +91,7 @@ public class Utilities {
         return score(cards, board);
     }
 
-    private static boolean inRow(ArrayList<PlayedCard> cards) {
+    static boolean inRow(ArrayList<PlayedCard> cards) {
         HashSet<Integer> yv = new HashSet<>();
         for (PlayedCard c : cards) {
             yv.add(c.y);
@@ -99,7 +99,7 @@ public class Utilities {
         return yv.size() == 1;
     }
 
-    private static boolean inCol(ArrayList<PlayedCard> cards) {
+    static boolean inCol(ArrayList<PlayedCard> cards) {
         HashSet<Integer> xv = new HashSet<>();
         for (PlayedCard c : cards) {
             xv.add(c.x);
@@ -174,7 +174,7 @@ public class Utilities {
         }
     }
 
-    private static boolean isLegalMove(ArrayList<PlayedCard> cards, ArrayList<PlayedCard> board) {
+    static boolean isLegalMove(ArrayList<PlayedCard> cards, ArrayList<PlayedCard> board) {
 
         // First check that there are no duplicated locations or cards between
         // the cards and the board, or among the cards.
@@ -226,7 +226,7 @@ public class Utilities {
         return false;
     }
 
-    private static PlayedCard cardAt(ArrayList<PlayedCard> board, int x, int y) {
+    static PlayedCard cardAt(ArrayList<PlayedCard> board, int x, int y) {
         for (PlayedCard c : board) {
             if (c.x == x && c.y == y) {
                 return c;
@@ -235,7 +235,7 @@ public class Utilities {
         return null;
     }
 
-    private static ArrayList<PlayedCard> horizontalBlock(PlayedCard card, ArrayList<PlayedCard> board) {
+    static ArrayList<PlayedCard> horizontalBlock(PlayedCard card, ArrayList<PlayedCard> board) {
         ArrayList<PlayedCard> block = new ArrayList<>();
         block.add(card);
         int x = card.x + 1;
@@ -262,7 +262,7 @@ public class Utilities {
         return block;
     }
 
-    private static ArrayList<PlayedCard> verticalBlock(PlayedCard card, ArrayList<PlayedCard> board) {
+    static ArrayList<PlayedCard> verticalBlock(PlayedCard card, ArrayList<PlayedCard> board) {
         ArrayList<PlayedCard> block = new ArrayList<>();
         block.add(card);
         int x = card.x;
@@ -290,7 +290,7 @@ public class Utilities {
     }
 
     // Checks that each row block of a card from cards is a proper line.
-    private static boolean checkRows(ArrayList<PlayedCard> cards, ArrayList<PlayedCard> board) {
+    static boolean checkRows(ArrayList<PlayedCard> cards, ArrayList<PlayedCard> board) {
         for (PlayedCard c : cards) {
             if (!properLine(horizontalBlock(c, board))) {
                 return false;
@@ -300,13 +300,51 @@ public class Utilities {
     }
 
     // Checks that each column block of a card from cards is a proper line.
-    private static boolean checkCols(ArrayList<PlayedCard> cards, ArrayList<PlayedCard> board) {
+    static boolean checkCols(ArrayList<PlayedCard> cards, ArrayList<PlayedCard> board) {
         for (PlayedCard c : cards) {
             if (!properLine(verticalBlock(c, board))) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Produce a string representation suitable for printing of a board.
+     *
+     * @param board the board
+     * @return a String representing the board
+     */
+    static String boardToString(ArrayList<PlayedCard> board) {
+        int xMin = Integer.MAX_VALUE;
+        int yMin = Integer.MAX_VALUE;
+        int xMax = Integer.MIN_VALUE;
+        int yMax = Integer.MIN_VALUE;
+        for (PlayedCard c : board) {
+            xMin = (xMin < c.x) ? xMin : c.x;
+            xMax = (xMax > c.x) ? xMax : c.x;
+            yMin = (yMin < c.y) ? yMin : c.y;
+            yMax = (yMax > c.y) ? yMax : c.y;
+        }
+        int cols = xMax - xMin + 1;
+        int rows = yMax - yMin + 1;
+        Card[][] cards = new Card[cols][rows];
+        for (PlayedCard c : board) {
+            cards[c.x - xMin][c.y - yMin] = c.card;
+        }
+        StringBuffer result = new StringBuffer();
+        for (int r = rows - 1; r >= 0; r--) {
+            for (int c = 0; c < cols; c++) {
+                if (cards[c][r] == null) {
+                    result.append("     ");
+                } else {
+                    result.append(cards[c][r]);
+                    result.append(" ");
+                }
+            }
+            result.append('\n');
+        }
+        return result.toString();
     }
 
     public static void main(String[] args) {
@@ -316,6 +354,7 @@ public class Utilities {
         b.add(new PlayedCard(new Card(Colour.GREEN, Shape.CIRCLE, 2), null, 1, 0));
         b.add(new PlayedCard(new Card(Colour.BLUE, Shape.TRIANGLE, 1), null, 1, -1));
         b.add(new PlayedCard(new Card(Colour.YELLOW, Shape.SQUARE, 4), null, 1, -2));
+        System.out.println(boardToString(b));
 
         ArrayList<PlayedCard> p = new ArrayList<>();
         p.add(new PlayedCard(new Card(Colour.GREEN, Shape.CROSS, 2), null, 0, 1));
@@ -325,6 +364,9 @@ public class Utilities {
 
         System.out.println(isLegalMove(p, b));
         System.out.println(scoreForMove(p, b));
+        
+        b.addAll(p);
+        System.out.println(boardToString(b));
 
     }
 }

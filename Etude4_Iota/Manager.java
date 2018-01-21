@@ -17,14 +17,14 @@ public class Manager {
     private HashMap<Player, Integer> score = new HashMap<>();
     private Deck deck;
     
-    public Manager(Player p1, Player p2) {
+    public Manager() {
+        
+    }
+    
+    void setPlayers(Player p1, Player p2) {
         this.p1 = p1;
         this.p2 = p2;
-        this.deck = new Deck();
-        dealHands();
-        seedBoard();
-        play();
-    }
+    }  
     
     /**
      * Get (a copy of) the current state of the board.
@@ -89,7 +89,9 @@ public class Manager {
     }
 
     private void play() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        dealHands();
+        seedBoard();
+        // More stuff
     }
     
     

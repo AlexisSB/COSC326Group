@@ -1,6 +1,8 @@
 package iota;
 
-import java.util.Arrays;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -11,29 +13,40 @@ import java.util.Collections;
  */
 public class Deck {
     
-    private Card[] deck;
-    private int index;
+    private ArrayDeque<Card> deck = new ArrayDeque<>();
+    
     
     public Deck() {
-        this.deck = new Card[64];
-        this.index = 0;
+        ArrayList<Card> d = new ArrayList<Card>();
         int i = 0;
         for(Colour c : Colour.values()) {
             for(Shape s : Shape.values()) {
                 for(int v = 1; v <= 4; v++) {
-                    deck[i++] = new Card(c, s, v);
+                    d.add(new Card(c, s, v));
                 }
             }
         }
-        Collections.shuffle(Arrays.asList(deck));
+        Collections.shuffle(d);
+        this.deck.addAll(d);
     }
     
     public boolean hasCard() {
-        return index < 64;
+        return !deck.isEmpty();
     }
     
     public Card dealCard() {
-        return deck[index++];
+        return deck.poll();
+    }
+    
+    void addCards(Collection<Card> cards) {
+        for(Card c : cards) {
+            deck.addLast(c);
+        }
+    }
+    
+    public static void main(String[] args) {
+        Deck d = new Deck();
+        for(Card c : d.deck) System.out.println(c);
     }
 
 }
