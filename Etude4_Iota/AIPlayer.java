@@ -3,6 +3,8 @@ package iota;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import iota.Utilities;
+
 /**
  * An AI Iota player.
  * 
@@ -23,19 +25,24 @@ public class AIPlayer extends Player {
         info.update(m.getHand(this),  m.getBoard());
 
         System.out.println("\n" + getName() +  " is starting their move.");
+        System.out.println("Board:");
+        System.out.println(Utilities.boardToString((ArrayList<PlayedCard>) info.board));
         // First best play.
         // (1) Choose a played card.
         PlayedCard seed = info.board.get(rand.nextInt(info.board.size()));
         System.out.println("Picked card: " + seed);
         // Try vertical block of card.
+        List<PlayedCard> cards = Utilities.verticalBlock(seed, (ArrayList<PlayedCard>) info.board);
+        System.out.println("Vertical block of picked card: " + cards);
         //      Find best play for block.
+        ArrayList<PlayedCard> move = null;
         // If no play
         // Try horizontal block of card.
         //      Find best play for block.
         // If still no play
         // goto: (1)
          
-        return null;
+        return move;
     }    
     
     @Override
