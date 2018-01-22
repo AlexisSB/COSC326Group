@@ -19,7 +19,6 @@ public class Manager {
     
     public Manager() {
         deck = new Deck();
-        
     }
     
     void setPlayers(Player p1, Player p2) {
@@ -89,7 +88,7 @@ public class Manager {
         board.add(new PlayedCard(deck.dealCard(), null, 0, 0));
     }
 
-    public void play() {
+    void play() {
         dealHands();
         seedBoard();
         // More stuff
