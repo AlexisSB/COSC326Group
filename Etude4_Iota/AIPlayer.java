@@ -55,6 +55,16 @@ public class AIPlayer extends Player {
         return "AI Player";
     }
 
+    public boolean formsLot(ArrayList<Card> cards) {
+        ArrayList<PlayedCard> playedCards = new ArrayList<>();
+
+        for (Card c : cards) {
+            playedCards.add(new PlayedCard(c, this, 0, 0));
+        }
+        
+        return cards.size() == 4 && Utilities.formSet(playedCards);
+    }
+
     /** All the info this player knows. */
     private class Info {
         Manager m;
