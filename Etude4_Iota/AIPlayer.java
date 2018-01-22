@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
  * @author Anthony Dickson
  */
 public class AIPlayer extends Player {
+    static Random rand = new Random();
     Info info;
     
     public AIPlayer(Manager m) {
@@ -20,6 +21,19 @@ public class AIPlayer extends Player {
     @Override
     public ArrayList<PlayedCard> makeMove() {
         info.update(m.getHand(this),  m.getBoard());
+
+        System.out.println("\n" + getName() +  " is starting their move.");
+        // First best play.
+        // (1) Choose a played card.
+        PlayedCard seed = info.board.get(rand.nextInt(info.board.size()));
+        System.out.println("Picked card: " + seed);
+        // Try vertical block of card.
+        //      Find best play for block.
+        // If no play
+        // Try horizontal block of card.
+        //      Find best play for block.
+        // If still no play
+        // goto: (1)
          
         return null;
     }    
