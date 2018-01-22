@@ -28,8 +28,8 @@ public class Iota {
     }
 
     public static void main(String[] args) {
-        cards.add(new Card(Colour.BLUE, Shape.CIRCLE, 1));
-        cards.add(new Card(Colour.BLUE, Shape.TRIANGLE, 2));
-        System.out.println(cards + " forms set? " + formSet(cards));
+        Manager m = new Manager();
+        m.setPlayers(new AIPlayer(m), new AIPlayer(m));
+        m.play();
     }    
 }

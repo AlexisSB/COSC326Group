@@ -91,7 +91,7 @@ public class Manager {
     void play() {
         dealHands();
         seedBoard();
-        // More stuff
+        p1.makeMove();
     }
     
     

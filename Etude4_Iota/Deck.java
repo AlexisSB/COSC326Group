@@ -15,7 +15,6 @@ public class Deck {
     
     private ArrayDeque<Card> deck = new ArrayDeque<>();
     
-    
     public Deck() {
         ArrayList<Card> d = new ArrayList<Card>();
         int i = 0;
