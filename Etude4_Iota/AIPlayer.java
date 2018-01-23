@@ -1,24 +1,31 @@
 package iota;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.Collections;
+import java.util.stream.*;
 
-import iota.Manager;
+import iota.Card;
 import iota.PlayedCard;
-import iota.Utilities;
+
+import java.awt.Point;
 
 /**
  * An AI Iota player.
  * 
  * @author Anthony Dickson
  */
-public class AIPlayer extends Player {
+public class AIPlayer extends Player {    
+    static final Point UP = new Point(0, 1);
+    static final Point DOWN = new Point(0, -1);
+    static final Point LEFT = new Point(-1, 0);
+    static final Point RIGHT = new Point(1, 0);
+    static final Point[] DIRECTIONS = { UP, DOWN, LEFT, RIGHT };
+
     static Random rand = new Random();
 
     Info info;
-    ArrayList<Card> hand;
-    ArrayList<PlayedCard> board;
+    ArrayList<Card> hand = new ArrayList<>();
+    ArrayList<PlayedCard> board = new ArrayList<>();
+    ArrayList<ArrayList<PlayedCard>> moves = new ArrayList<>();
     
     public AIPlayer(Manager m) {
         super(m);
@@ -32,49 +39,44 @@ public class AIPlayer extends Player {
         board = m.getBoard();
 
         info.update(hand, board);
-        System.out.println("\n" + getName() +  " is starting their move.");
-        System.out.println("Board:");
-        System.out.println(Utilities.boardToString(board));
-        System.out.println("Hand: " + hand + "\n");
+        // System.out.println("\n" + getName() +  " is starting their move.");
+        // System.out.println("Board:");
+        // System.out.println(Utilities.boardToString(board));
+        // System.out.println("Hand: " + hand + "\n");
+
+        ArrayList<PlayedCard> move = new ArrayList<>();
+
+        if (getMoves()) {
+            move = getMaxScoreMove();
+            System.out.println("Num available moves: " + moves.size());
+            System.out.println("Random move: " + getRandMove());
+            System.out.println("Min score move: " + getMinScoreMove());
+            System.out.println("Max score move: " + getMaxScoreMove());
+            System.out.println("Min card move: " + getMinCardsMove());
+            System.out.println("Max card move: " + getMaxCardsMove());
+        }        
         
-        ArrayList<PlayedCard> move = getMaxScoreMove();        
-        
-        System.out.println("Chose move: " + move);
         return move;
     }    
-    
-    /** Get the move that gives the max score. */
-    private ArrayList<PlayedCard> getMaxScoreMove() {
+
+    /** Choose a random move. */
+    private ArrayList<PlayedCard> getRandMove() {
+        if (moves.size() == 0) return new ArrayList<PlayedCard>();
+
+        return moves.get(rand.nextInt(moves.size() - 1));
+    }
+
+    /** Get the move that gives the min score. */
+    private ArrayList<PlayedCard> getMinScoreMove() {
         ArrayList<PlayedCard> move = new ArrayList<>();
-        ArrayList<ArrayList<PlayedCard>> moves = new ArrayList<>();
-        ArrayList<PlayedCard> cards;
-
-        for (PlayedCard c : board) {
-            cards = getVBlock(c);
-            System.out.println("Block of picked cards: " + cards);
-            move = getMoveVBlock(cards);
-            
-            if (!move.isEmpty()) {
-                moves.add(move);
-            }
-            
-            cards = getHBlock(c);
-            System.out.println("Block of picked cards: " + cards);
-            
-            move = getMoveHBlock(cards);
-            
-            if (!move.isEmpty()) {
-                moves.add(move);
-            }
-        }
-
-        int maxScore = -1;
-
+        int minScore = Integer.MAX_VALUE;
+        
+        // Find the move with the best score.
         for (ArrayList<PlayedCard> mv : moves) {
             int score = Utilities.scoreForMove(mv, board);
             
-            if (score > maxScore) {
-                score = maxScore;
+            if (score < minScore) {
+                minScore = score;
                 move = mv;
             }
         }
@@ -82,94 +84,156 @@ public class AIPlayer extends Player {
         return move;
     }
 
-    /** Get random played card from the board. */
-    private PlayedCard randCard() {
-        return board.get(rand.nextInt(board.size()));
-    }
-    
-    /** Chooses a random vertical block on the board. */
-    private ArrayList<PlayedCard> getVBlock(PlayedCard c) {
-        return Utilities.verticalBlock(c, board);
-    }
-    
-    /** Chooses a random horizontal block on the board. */
-    private ArrayList<PlayedCard> getHBlock(PlayedCard c) {
-        return Utilities.horizontalBlock(c, board);
-    }
-
-    /** Finds the player max move for a given vertical block of played cards. */
-    private ArrayList<PlayedCard> getMoveVBlock(ArrayList<PlayedCard> cards) {
+    /** Get the move that gives the max score. */
+    private ArrayList<PlayedCard> getMaxScoreMove() {
         ArrayList<PlayedCard> move = new ArrayList<>();
-
-        Collections.sort(cards, (a, b) -> a.y - b.y);
-
-        PlayedCard start, end;
-        start = cards.get(0);
-        end = cards.get(cards.size() - 1);
-
-        for (Card c : hand) {
-            move.add(new PlayedCard(c, this, start.x, start.y - 1));
-            int score = Utilities.scoreForMove(move, board);
-
-            if (score > -1) {
-                System.out.println("Score for move " + move + " is " + score);
-                break;
-            } else {
-                move.remove(move.size() - 1);
-            }
+        int maxScore = -1;
+        
+        // Find the move with the best score.
+        for (ArrayList<PlayedCard> mv : moves) {
+            int score = Utilities.scoreForMove(mv, board);
             
-            move.add(new PlayedCard(c, this, end.x, end.y + 1));
-            score = Utilities.scoreForMove(move, board);
-
-            if (score > -1) {
-                System.out.println("Score for move " + move + " is " + score);
-                break;
-            } else {
-                move.remove(move.size() - 1);
-            }            
+            if (score > maxScore) {
+                maxScore = score;
+                move = mv;
+            }
         }
 
         return move;
     }
 
-    /** Finds the player max move for a given vertical block of played cards. */
-    private ArrayList<PlayedCard> getMoveHBlock(ArrayList<PlayedCard> cards) {
+    /** Get the move that uses the most cards. */
+    private ArrayList<PlayedCard> getMinCardsMove() {
         ArrayList<PlayedCard> move = new ArrayList<>();
+        int min = Integer.MAX_VALUE;
 
-        Collections.sort(cards, (a, b) -> a.x - b.x);
-
-        PlayedCard start, end;
-        start = cards.get(0);
-        end = cards.get(cards.size() - 1);
-
-        for (Card c : hand) {
-            move.add(new PlayedCard(c, this, start.x - 1, start.y ));
-            int score = Utilities.scoreForMove(move, board);
-
-            if (score > -1) {
-                System.out.println("Score for move " + move + " is " + score);
-                break;
-            } else {
-                move.remove(move.size() - 1);
-            }
+        // Find the move with the best score.
+        for (ArrayList<PlayedCard> mv : moves) {
+            int nCards = mv.size();
             
-            move.add(new PlayedCard(c, this, end.x + 1, end.y));
-            score = Utilities.scoreForMove(move, board);
+            if (nCards < min) {
+                min = nCards;
+                move = mv;
+            }
+        }
 
-            if (score > -1) {
-                System.out.println("Score for move " + move + " is " + score);
-                break;
-            } else {
-                move.remove(move.size() - 1);
+        return move;
+    }
+
+    /** Get the move that uses the most cards. */
+    private ArrayList<PlayedCard> getMaxCardsMove() {
+        ArrayList<PlayedCard> move = new ArrayList<>();
+        int max = -1;
+
+        // Find the move with the best score.
+        for (ArrayList<PlayedCard> mv : moves) {
+            int nCards = mv.size();
+            
+            if (nCards > max) {
+                max = nCards;
+                move = mv;
+            }
+        }
+
+        return move;
+    }
+
+    /**
+     * Get all available moves on the board.
+     * 
+     * @return true if valid moves were found, false otherwise.
+     */
+    private boolean getMoves() { 
+        boolean found = false;
+
+        for (PlayedCard c : board) {
+            found |= getMoves(c);
+        }
+
+        return found;
+    }
+
+    /**
+     * Get all available moves from the PlayedCard start.
+     * 
+     * @param start The card to search from.
+     * @return true if valid moves were found, false otherwise.
+     */
+    private boolean getMoves(PlayedCard start) { 
+        moves = new ArrayList<>();
+        boolean found = false;
+
+        for (Point dir : DIRECTIONS) {
+            found |= getMoves(start.x + dir.x, start.y + dir.y);
+        }
+
+        return found;
+    }
+
+    /**
+     * Get all available moves from the given x,y coordinates.
+     * 
+     * @param x The x coordinate where the first card should be placed.
+     * @param y The y coordinate where the first card should be placed.
+     * @return true if valid moves were found, false otherwise.
+     */
+    private boolean getMoves(int x, int y) { 
+        
+        boolean found = false;
+        
+        for (Point dir : DIRECTIONS) {
+            found |= getMoves(x, y, hand, dir, new ArrayList<>());
+        }
+        
+        return found;
+    }
+    
+    /**
+     * Get all available moves from given x,y coordinates in a given direction.
+     * 
+     * @param x The x coordinate where the card should be placed.
+     * @param y The y coordinate where the card should be placed.
+     * @param cards The cards to try play.
+     * @param dir The direction we should try play in.
+     * @param move The current list of moves.
+     * @return true if valid moves were found, false otherwise.
+     */
+    private boolean getMoves(int x, int y, ArrayList<Card> cards, Point dir, ArrayList<PlayedCard> move) {
+        if (cards.size() == 0) return false;
+
+        boolean found = false;
+
+        // Find card in our hand that can be put on the board at (x, y).
+        for (int i = 0; i < cards.size(); i++) {
+            move.add(new PlayedCard(cards.get(i), this, x, y));
+            // System.out.println("Search state:\tx=" + x + "\ty=" + y + "\tdir=" + dir + "\tmove=" + move);
+            
+            if (Utilities.isLegalMove(move, board)) {
+                found = true;
+                
+                ArrayList<PlayedCard> moveCopy = new ArrayList<>();
+                
+                for (PlayedCard pc : move) {
+                    moveCopy.add(pc.copy());
+                }
+                
+                // System.out.println("Adding move: " + moveCopy);
+                moves.add(moveCopy);
+                ArrayList<Card> remainingHand = new ArrayList<>(cards);
+                remainingHand.remove(i);
+                getMoves(x + dir.x, y + dir.y, remainingHand, dir, move);
             } 
-        }
 
-        return move;
+            move.remove(move.size() - 1);
+        }
+        
+        return found;
     }
+
     
     @Override
     public ArrayList<Card> discard() {
-        return null;
+        return hand;
     }
     
     @Override
@@ -228,12 +292,11 @@ public class AIPlayer extends Player {
             updateKnownCards(toCardList(board));
 
             if (other != null) {
-                System.out.println("Other hand: " + m.getHand(other));
                 updateKnownCards(m.getHand(other));
             }
 
             updateCardProbabilities();        
-            printInfo();
+            // printInfo();
         }
 
         private void findOther(List<PlayedCard> board) {
@@ -279,7 +342,7 @@ public class AIPlayer extends Player {
         /**
          * Calculates the probaility of any one of the given cards being played in the next move.
          * 
-         * @param c The card to check.
+         * @param start The card to check.
          */
         double pOneOf(List<Card> cards) {
             double p = 0.0;
@@ -294,7 +357,7 @@ public class AIPlayer extends Player {
         /**
          * Calculates the probaility of all of the given cards being played in the next move.
          * 
-         * @param c The card to check.
+         * @param start The card to check.
          */
         double pAllOf(List<Card> cards) {
             if (cards.size() == 0) return 0.0;

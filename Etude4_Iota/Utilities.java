@@ -202,26 +202,31 @@ public class Utilities {
 
         if (inRow(cards)) {
             ArrayList<PlayedCard> block = horizontalBlock(cards.get(0), newBoard);
+            if (block.size() < cards.size() || !block.containsAll(cards)) return false;
+            if (block.size() == cards.size()) {
+                boolean goodBlock = false;
+                for (PlayedCard c : cards) {
+                    goodBlock |= verticalBlock(c, newBoard).size() > 1;
+                }
+                if (!goodBlock) return false;
+            }
 
-            if (!block.containsAll(cards)) {
-                return false;
-            }
-            if (!properLine(block)) {
-                return false;
-            }
-            return checkCols(cards, newBoard);
+            return checkRows(cards, newBoard) && checkCols(cards, newBoard);
         }
 
         if (inCol(cards)) {
             ArrayList<PlayedCard> block = verticalBlock(cards.get(0), newBoard);
 
-            if (!block.containsAll(cards)) {
-                return false;
+            if (block.size() < cards.size() || !block.containsAll(cards)) return false;
+            if (block.size() == cards.size()) {
+                boolean goodBlock = false;
+                for (PlayedCard c : cards) {
+                    goodBlock |= horizontalBlock(c, newBoard).size() > 1;
+                }
+                if (!goodBlock) return false;
             }
-            if (!properLine(block)) {
-                return false;
-            }
-            return checkRows(cards, newBoard);
+
+            return checkRows(cards, newBoard) && checkCols(cards, newBoard);
         }
         return false;
     }
@@ -242,7 +247,7 @@ public class Utilities {
         int y = card.y;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {// && Math.abs(c.x - block.get(block.size() - 1).x) == 1) {
+            if (c != null) {
                 block.add(c);
             } else {
                 break;
@@ -252,7 +257,7 @@ public class Utilities {
         x = card.x - 1;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {// && Math.abs(c.x - block.get(block.size() - 1).x) == 1) {
+            if (c != null) {
                 block.add(c);
             } else {
                 break;
@@ -269,7 +274,7 @@ public class Utilities {
         int y = card.y + 1;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {// && Math.abs(c.y - block.get(block.size() - 1).y) == 1) {
+            if (c != null) {
                 block.add(c);
             } else {
                 break;
@@ -279,7 +284,7 @@ public class Utilities {
         y = card.y - 1;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {// && Math.abs(c.y - block.get(block.size() - 1).y) == 1) {
+            if (c != null) {
                 block.add(c);
             } else {
                 break;
@@ -351,20 +356,20 @@ public class Utilities {
 
         ArrayList<PlayedCard> b = new ArrayList<>();
         b.add(new PlayedCard(new Card(Colour.BLUE, Shape.CROSS, 1), null, 0, 0));
-        b.add(new PlayedCard(new Card(Colour.GREEN, Shape.CIRCLE, 2), null, 1, 0));
-        b.add(new PlayedCard(new Card(Colour.BLUE, Shape.TRIANGLE, 1), null, 1, -1));
-        b.add(new PlayedCard(new Card(Colour.YELLOW, Shape.SQUARE, 4), null, 1, -2));
-        System.out.println(boardToString(b));
+//        b.add(new PlayedCard(new Card(Colour.GREEN, Shape.CIRCLE, 2), null, 1, 0));
+//        b.add(new PlayedCard(new Card(Colour.BLUE, Shape.TRIANGLE, 1), null, 1, -1));
+//        b.add(new PlayedCard(new Card(Colour.YELLOW, Shape.SQUARE, 4), null, 1, -2));
+//        System.out.println(boardToString(b));
 
         ArrayList<PlayedCard> p = new ArrayList<>();
-        p.add(new PlayedCard(new Card(Colour.GREEN, Shape.CROSS, 2), null, 0, 1));
-        p.add(new PlayedCard(new Card(Colour.RED, Shape.CROSS, 3), null, 1, 1));
-        p.add(new PlayedCard(new Card(Colour.YELLOW, Shape.CROSS, 1), null, 2, 1));
-        p.add(new PlayedCard(new Card(Colour.BLUE, Shape.CROSS, 4), null, 3, 1));
+        p.add(new PlayedCard(new Card(Colour.GREEN, Shape.CROSS, 2), null, 1, 1));
+//        p.add(new PlayedCard(new Card(Colour.RED, Shape.CROSS, 3), null, 1, 1));
+//        p.add(new PlayedCard(new Card(Colour.YELLOW, Shape.CROSS, 1), null, 2, 1));
+//        p.add(new PlayedCard(new Card(Colour.BLUE, Shape.CROSS, 4), null, 3, 1));
 
         System.out.println(isLegalMove(p, b));
         System.out.println(scoreForMove(p, b));
-        
+
         b.addAll(p);
         System.out.println(boardToString(b));
 

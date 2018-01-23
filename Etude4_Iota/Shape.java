@@ -7,21 +7,29 @@ package iota;
  */
 public enum Shape {
 
-    CIRCLE{
+    CIRCLE {
         @Override
-        public String toString() { return "()"; }
+        public String toString() {
+            return "()";
+        }
     },
-    CROSS{
+    CROSS {
         @Override
-        public String toString() { return "++"; }
+        public String toString() {
+            return "++";
+        }
     },
-    SQUARE{
+    SQUARE {
         @Override
-        public String toString() { return "[]"; }
+        public String toString() {
+            return "[]";
+        }
     },
-    TRIANGLE{
+    TRIANGLE {
         @Override
-        public String toString() { return "/\\"; }
+        public String toString() {
+            return "/\\";
+        }
     }
-    
+
 }

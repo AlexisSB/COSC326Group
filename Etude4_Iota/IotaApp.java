@@ -12,7 +12,7 @@ public class IotaApp {
         Manager m = new Manager();
         Player p1 = new AIPlayer(m);
         Player p2 = new AIPlayer(m);
-        m.setPlayers(p1, p2);
+        m.addPlayers(p1, p2);
         m.play();
     }    
 }
