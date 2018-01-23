@@ -26,7 +26,7 @@ public class AIPlayer extends Player {
     ArrayList<Card> hand = new ArrayList<>();
     ArrayList<PlayedCard> board = new ArrayList<>();
     ArrayList<PlayedCard> move = new ArrayList<>();
-    ArrayList<ArrayList<PlayedCard>> moves = new ArrayList<>();
+    HashMap<ArrayList<PlayedCard>, Integer> moves = new HashMap<>();
     
     public AIPlayer(Manager m) {
         super(m);
@@ -36,36 +36,47 @@ public class AIPlayer extends Player {
     
     @Override
     public ArrayList<PlayedCard> makeMove() {
-        hand = m.getHand(this);
-        board = m.getBoard();
+        ArrayList<Card> hand = m.getHand(this);
+        ArrayList<PlayedCard> board = m.getBoard();
 
         info.update(hand, board);
-        System.out.println("\n" + getName() +  " is starting their move.");
-        System.out.println("Board:");
-        System.out.println(Utilities.boardToString(board));
-        System.out.println("Hand: " + hand + "\n");
 
-        getMoves();
-        move = getMaxScoreMove();
-        System.out.println("Num available moves: " + moves.size());
-        System.out.println("Max score move " + move + " worth " + Utilities.scoreForMove(move, board) + " points.");
+        getMoves(hand, board);
+
+        if (info.other != null) {
+            HashMap<ArrayList<PlayedCard>, Integer> movesCopy = new HashMap(moves);
+
+            for (Map.Entry<ArrayList<PlayedCard>, Integer>  mv : movesCopy.entrySet()) {
+                board.addAll(mv.getKey());
+                
+                getMoves(m.getHand(info.other), board);
+                ArrayList<PlayedCard> otherBestMove = getMaxScoreMove(moves);
+                int otherBestScore = Utilities.scoreForMove(otherBestMove, board);
+                movesCopy.put(mv.getKey(), mv.getValue() - otherBestScore);
+                
+                board.removeAll(mv.getKey());
+            }
+
+            moves = movesCopy;
+            
+        }
+        
+        move = getMaxScoreMove(moves);
         
         return move;
     }    
 
     /** Get the move that gives the max score. */
-    private ArrayList<PlayedCard> getMaxScoreMove() {
+    private ArrayList<PlayedCard> getMaxScoreMove(HashMap<ArrayList<PlayedCard>, Integer> moves) {
         ArrayList<PlayedCard> maxScoreMove = new ArrayList<>();
         int maxScore = -1;
 
         
         // Find the move with the best score.
-        for (ArrayList<PlayedCard> mv : moves) {
-            int score = Utilities.scoreForMove(mv, board);
-            
-            if (score > maxScore) {
-                maxScore = score;
-                maxScoreMove = mv;
+        for (Map.Entry<ArrayList<PlayedCard>, Integer>  mv : moves.entrySet()) {            
+            if (mv.getValue() > maxScore) {
+                maxScore = mv.getValue();
+                maxScoreMove = mv.getKey();
             }
         }
 
@@ -77,7 +88,7 @@ public class AIPlayer extends Player {
      * 
      * @return true if valid moves were found, false otherwise.
      */
-    private boolean getMoves() { 
+    private boolean getMoves(ArrayList<Card> hand, ArrayList<PlayedCard> board) { 
         boolean found = false;
         HashSet<Point> coords = new HashSet<>();
 
@@ -92,7 +103,7 @@ public class AIPlayer extends Player {
 
         for (Point coord : coords) {
             for (Point dir : DIRECTIONS) {
-                found |= getMoves(coord.x, coord.y, hand, dir);
+                found |= getMoves(coord.x, coord.y, hand, dir, board);
             }
         }
 
@@ -108,27 +119,28 @@ public class AIPlayer extends Player {
      * @param dir The direction we should try play in.
      * @return true if valid moves were found, false otherwise.
      */
-    private boolean getMoves(int x, int y, ArrayList<Card> cards, Point dir) {
+    private boolean getMoves(int x, int y, ArrayList<Card> cards, Point dir, ArrayList<PlayedCard> board) {
         if (cards.size() == 0) return false;
 
         boolean found = false;
 
         for (int i = 0; i < cards.size(); i++) {
             move.add(new PlayedCard(cards.get(i), this, x, y));
+            int score = Utilities.scoreForMove(move, board);
             
-            if (Utilities.isLegalMove(move, board)) {
+            if (score > -1) {
                 found = true;
     
                 ArrayList<PlayedCard> moveCopy = new ArrayList<>();
                 for (PlayedCard c : move) {
                     moveCopy.add(c.copy());
                 }
-                moves.add(moveCopy);
+                moves.put(moveCopy, score);
     
                 ArrayList<Card> cardsCopy = new ArrayList<>(cards);
                 cardsCopy.remove(cards.get(i));
 
-                getMoves(x + dir.x, y + dir.y, cardsCopy, dir);
+                getMoves(x + dir.x, y + dir.y, cardsCopy, dir, board);
             } 
 
             move.remove(move.size() - 1);
@@ -140,7 +152,7 @@ public class AIPlayer extends Player {
     
     @Override
     public ArrayList<Card> discard() {
-        return hand;
+        return m.getHand(this);
     }
     
     @Override
@@ -289,17 +301,6 @@ public class AIPlayer extends Player {
 
         void printInfo() {
             System.out.println(this);
-            // Card c = new Card(Colour.BLUE, Shape.CIRCLE, 1);
-            // System.out.println("Chance of " + c + " being played: " + pCard(c));
-
-            // Card c1 = new Card(Colour.RED, Shape.TRIANGLE, 3);
-            // Card c2 = new Card(Colour.GREEN, Shape.SQUARE, 4);
-            // List<Card> cards = new ArrayList<>();
-            // cards.add(c);
-            // cards.add(c1);
-            // cards.add(c2);
-            // System.out.println("Chance of any one of " + cards + " being played: " + pOneOf(cards));
-            // System.out.println("Chance of all of " + cards + " being played: " + pAllOf(cards));
         }
 
         private List<Card> toCardList(List<PlayedCard> cards) {

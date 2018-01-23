@@ -19,7 +19,7 @@ public class IotaDisplay extends JPanel {
          */
         Manager m = new Manager();
         Player p1 = new AIPlayer(m);
-        Player p2 = new AIPlayer(m);
+        Player p2 = new MaxFirst(m);
 
         m.addPlayers(p1, p2);
         m.setup();
