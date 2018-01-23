@@ -69,6 +69,12 @@ public class Utilities {
      * @return true if the cards form a set
      */
     static boolean formSet(ArrayList<PlayedCard> cards) {
+        if (cards.size() <= 2) {
+            return true;
+        }
+        if (cards.size() > 4) {
+            return false;
+        }
         HashSet<Shape> shapes = new HashSet<>();
         HashSet<Colour> colours = new HashSet<>();
         HashSet<Integer> values = new HashSet<>();
@@ -202,31 +208,43 @@ public class Utilities {
 
         if (inRow(cards)) {
             ArrayList<PlayedCard> block = horizontalBlock(cards.get(0), newBoard);
-            if (block.size() < cards.size() || !block.containsAll(cards)) return false;
+            if (block.size() < cards.size()
+                    || !block.containsAll(cards)
+                    || !formSet(block)) {
+                return false;
+            }
             if (block.size() == cards.size()) {
                 boolean goodBlock = false;
                 for (PlayedCard c : cards) {
                     goodBlock |= verticalBlock(c, newBoard).size() > 1;
                 }
-                if (!goodBlock) return false;
+                if (!goodBlock) {
+                    return false;
+                }
             }
 
-            return checkRows(cards, newBoard) && checkCols(cards, newBoard);
+            return checkCols(cards, newBoard);
         }
 
         if (inCol(cards)) {
             ArrayList<PlayedCard> block = verticalBlock(cards.get(0), newBoard);
 
-            if (block.size() < cards.size() || !block.containsAll(cards)) return false;
+            if (block.size() < cards.size()
+                    || !block.containsAll(cards)
+                    || !formSet(block)) {
+                return false;
+            }
             if (block.size() == cards.size()) {
                 boolean goodBlock = false;
                 for (PlayedCard c : cards) {
                     goodBlock |= horizontalBlock(c, newBoard).size() > 1;
                 }
-                if (!goodBlock) return false;
+                if (!goodBlock) {
+                    return false;
+                }
             }
 
-            return checkRows(cards, newBoard) && checkCols(cards, newBoard);
+            return checkRows(cards, newBoard);
         }
         return false;
     }

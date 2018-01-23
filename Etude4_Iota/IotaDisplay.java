@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class IotaDisplay extends JPanel {
 
@@ -19,33 +20,44 @@ public class IotaDisplay extends JPanel {
         Manager m = new Manager();
         Player p1 = new AIPlayer(m);
         Player p2 = new AIPlayer(m);
+
         m.addPlayers(p1, p2);
         m.setup();
         /*
          * Below this is GUI stuff only
          */
 
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         dp = new DisplayPanel(m, 68 * PlayedCard.SIZE, 68 * PlayedCard.SIZE);
         sp = new JScrollPane(dp);
-        sp.setPreferredSize(new Dimension(810, 630));
+        sp.setPreferredSize(new Dimension(19 * PlayedCard.SIZE, 15 * PlayedCard.SIZE));
+        sp.setMinimumSize(new Dimension(19 * PlayedCard.SIZE, 15 * PlayedCard.SIZE));
         add(sp);
+        add(Box.createHorizontalGlue());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        sp.getViewport().setViewPosition(new Point(dp.width / 2 - 4 * PlayedCard.SIZE, dp.height / 2 - 3 * PlayedCard.SIZE));
+        sp.getViewport().setViewPosition(new Point(dp.width / 2 - 9 * PlayedCard.SIZE, dp.height / 2 - 7 * PlayedCard.SIZE));
         JPanel hands = new JPanel();
         add(hands);
-        hands.setLayout(new BoxLayout(hands, BoxLayout.LINE_AXIS));
-        HandPanel hp1 = new HandPanel(m, sp.getWidth() / 2, 140, p1);
-        HandPanel hp2 = new HandPanel(m, sp.getHeight() / 2, 140, p2);
-        hands.add(hp1);
-        hands.add(hp2);
+        hands.setLayout(new BoxLayout(hands, BoxLayout.PAGE_AXIS));
+        ArrayList<HandPanel> handPanels = new ArrayList<>();
+
+        for (Player p : m.players) {
+            JPanel jp = new JPanel();
+            jp.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            HandPanel hp = new HandPanel(m, 5 * PlayedCard.SIZE, 140, p);
+            hp.setMaximumSize(new Dimension(5 * PlayedCard.SIZE, 150));
+            jp.add(hp);
+            handPanels.add(hp);
+            hands.add(jp);
+            hands.add(Box.createVerticalGlue());
+        }
         JPanel bp = new JPanel();
         bp.setLayout(new BoxLayout(bp, BoxLayout.LINE_AXIS));
         JButton stepButton = new JButton("Step");
         bp.add(stepButton);
         JButton centerButton = new JButton("Center");
         bp.add(centerButton);
-        add(bp);
+        hands.add(bp);
         JButton runButton = new JButton("Run");
         bp.add(runButton);
         JButton resetButton = new JButton("Reset");
@@ -56,8 +68,9 @@ public class IotaDisplay extends JPanel {
                 if (!m.gameOver) {
                     m.step();
                     dp.repaint();
-                    hp1.repaint();
-                    hp2.repaint();
+                    for (HandPanel hp : handPanels) {
+                        hp.repaint();
+                    }
                 }
             }
         });
@@ -73,14 +86,16 @@ public class IotaDisplay extends JPanel {
                 if (!m.gameOver) {
                     m.play();
                     dp.repaint();
-                    hp1.repaint();
-                    hp2.repaint();
+                    for (HandPanel hp : handPanels) {
+                        hp.repaint();
+                    }
                 } else {
                     m.setup();
                     m.play();
                     dp.repaint();
-                    hp1.repaint();
-                    hp2.repaint();
+                    for (HandPanel hp : handPanels) {
+                        hp.repaint();
+                    }
                 }
             }
         });
@@ -89,8 +104,9 @@ public class IotaDisplay extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 m.setup();
                 dp.repaint();
-                hp1.repaint();
-                hp2.repaint();
+                for (HandPanel hp : handPanels) {
+                    hp.repaint();
+                }
             }
         });
     }

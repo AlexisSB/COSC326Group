@@ -22,7 +22,7 @@ public class Manager {
     int drawCounter = 0;
     boolean gameOver = false;
     boolean gameStarted = false;
-    private ArrayList<Player> players = new ArrayList<>();
+    ArrayList<Player> players = new ArrayList<>();
 
     public Manager() {
     }
@@ -126,6 +126,7 @@ public class Manager {
         resetScores();
         dealHands();
         seedBoard();
+        playerNumber = 0;
         gameOver = false;
     }
 

@@ -43,6 +43,7 @@ class HandPanel extends JPanel {
             pc.drawCard(g, 0);
         }
         g.setColor(Color.BLACK);
-        g.drawString("Score: " + manager.getRawScore(player), 10, 120);
+        g.drawString("Player: " + player.getName(), 10, 110);
+        g.drawString("Score: " + manager.getRawScore(player), 10, 130);
     }
 }

@@ -14,7 +14,7 @@ public class PlayedCard {
     Player p;
     int x;
     int y;
-    static final int SIZE = 90;
+    static final int SIZE = 60;
     private static final int BORDER_RADIUS = SIZE / 10;
     private static final int PIPSIZE = SIZE / 10;
 
@@ -53,10 +53,7 @@ public class PlayedCard {
         if (this.x != other.x) {
             return false;
         }
-        if (this.y != other.y) {
-            return false;
-        }
-        return true;
+        return this.y == other.y;
     }
 
     public String toString() {
