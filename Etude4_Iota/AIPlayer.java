@@ -60,7 +60,6 @@ public class AIPlayer extends Player {
             moves = movesCopy;
             
         }
-        System.out.println(moves);
         move = getMaxScoreMove(moves);
         
         return move;
