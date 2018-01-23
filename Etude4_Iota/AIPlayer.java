@@ -60,7 +60,7 @@ public class AIPlayer extends Player {
             moves = movesCopy;
             
         }
-        
+        System.out.println(moves);
         move = getMaxScoreMove(moves);
         
         return move;
@@ -69,7 +69,7 @@ public class AIPlayer extends Player {
     /** Get the move that gives the max score. */
     private ArrayList<PlayedCard> getMaxScoreMove(HashMap<ArrayList<PlayedCard>, Integer> moves) {
         ArrayList<PlayedCard> maxScoreMove = new ArrayList<>();
-        int maxScore = -1;
+        int maxScore = Integer.MIN_VALUE;
 
         
         // Find the move with the best score.
