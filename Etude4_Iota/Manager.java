@@ -24,6 +24,9 @@ public class Manager {
     void setPlayers(Player p1, Player p2) {
         this.p1 = p1;
         this.p2 = p2;
+        score.put(p1, new Integer(0));
+        score.put(p2, new Integer(0));
+    
     }  
     
     /**
@@ -92,6 +95,35 @@ public class Manager {
         dealHands();
         seedBoard();
         // More stuff
+
+        //Code Added By Alexis
+        int count = 0;
+        final int TURN_LIMIT = 4;
+        while(count <TURN_LIMIT){
+            //How does it handle discard??
+            // Needs to update hand of player
+            
+            ArrayList<PlayedCard> player1Move = p1.makeMove();
+            int player1Score = Utilities.scoreForMove(player1Move,this.board);
+            if (player1Score != Utilities.ILLEGAL){
+                this.board.addAll(player1Move);
+                int newScore = score.get(p1)+player1Score;
+                score.put(p1,newScore);
+            }
+            ArrayList<PlayedCard> player2Move = p2.makeMove();
+            int player2Score = Utilities.scoreForMove(player2Move,this.board);
+            if (player2Score != Utilities.ILLEGAL){
+                this.board.addAll(player2Move);
+                int newScore = score.get(p2)+player2Score;
+                score.put(p2,newScore);
+            }
+
+            //Print Scores
+            System.err.println( "Player 1 Score : " + getScore(p1));
+            System.err.println( "Player 2 Score : " + getScore(p2));
+            
+            count++;
+        }
     }
     
     
