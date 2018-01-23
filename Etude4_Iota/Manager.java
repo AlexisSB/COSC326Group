@@ -105,18 +105,23 @@ public class Manager {
             
             ArrayList<PlayedCard> player1Move = p1.makeMove();
             int player1Score = Utilities.scoreForMove(player1Move,this.board);
-            if (player1Score != Utilities.ILLEGAL){
+            if (Utilities.isLegalMove(player1Move,this.board)){
                 this.board.addAll(player1Move);
                 int newScore = score.get(p1)+player1Score;
                 score.put(p1,newScore);
+            }else{
+                System.err.println("Illegal Move");
             }
             ArrayList<PlayedCard> player2Move = p2.makeMove();
             int player2Score = Utilities.scoreForMove(player2Move,this.board);
-            if (player2Score != Utilities.ILLEGAL){
+            if (Utilities.isLegalMove(player2Move,this.board)){
                 this.board.addAll(player2Move);
                 int newScore = score.get(p2)+player2Score;
                 score.put(p2,newScore);
+            }else{
+                System.err.println("Illegal Move");
             }
+        
 
             //Print Scores
             System.err.println( "Player 1 Score : " + getScore(p1));

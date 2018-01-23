@@ -60,7 +60,8 @@ public class PlayerBasic extends Player{
                 PlayedCard firstCardToPlay = new PlayedCard(cardToPlay,this,(int)p.getX(),(int)p.getY());
                 ArrayList<PlayedCard> testPlay = new ArrayList<PlayedCard>();
                 testPlay.add(firstCardToPlay);
-                if(Utilities.scoreForMove(testPlay,theBoard) != Utilities.ILLEGAL){
+                //TODO is Legal move doesn't check if the cards are in a  set.Yet?
+                if(Utilities.isLegalMove(testPlay,theBoard)){
                     System.err.println("Cards to Play: " + testPlay);
                     System.err.println("Score : " + Utilities.scoreForMove(testPlay,theBoard));
                     return testPlay;
