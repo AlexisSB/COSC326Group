@@ -206,7 +206,7 @@ public class Utilities {
             if (!block.containsAll(cards)) {
                 return false;
             }
-            if (!inLine(block)) {
+            if (!properLine(block)) {
                 return false;
             }
             return checkCols(cards, newBoard);
@@ -218,7 +218,7 @@ public class Utilities {
             if (!block.containsAll(cards)) {
                 return false;
             }
-            if (!inLine(block)) {
+            if (!properLine(block)) {
                 return false;
             }
             return checkRows(cards, newBoard);
@@ -242,7 +242,7 @@ public class Utilities {
         int y = card.y;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {
+            if (c != null) {// && Math.abs(c.x - block.get(block.size() - 1).x) == 1) {
                 block.add(c);
             } else {
                 break;
@@ -252,7 +252,7 @@ public class Utilities {
         x = card.x - 1;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {
+            if (c != null) {// && Math.abs(c.x - block.get(block.size() - 1).x) == 1) {
                 block.add(c);
             } else {
                 break;
@@ -269,7 +269,7 @@ public class Utilities {
         int y = card.y + 1;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {
+            if (c != null) {// && Math.abs(c.y - block.get(block.size() - 1).y) == 1) {
                 block.add(c);
             } else {
                 break;
@@ -279,7 +279,7 @@ public class Utilities {
         y = card.y - 1;
         do {
             PlayedCard c = cardAt(board, x, y);
-            if (c != null) {
+            if (c != null) {// && Math.abs(c.y - block.get(block.size() - 1).y) == 1) {
                 block.add(c);
             } else {
                 break;

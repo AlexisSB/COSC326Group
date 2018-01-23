@@ -2,6 +2,7 @@ package iota;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.*;
 
 /**
  * Manager class for an Iota game
@@ -23,7 +24,10 @@ public class Manager {
     
     void setPlayers(Player p1, Player p2) {
         this.p1 = p1;
+        score.put(p1, 0);
+
         this.p2 = p2;
+        score.put(p2, 0);
     }  
     
     /**
@@ -91,7 +95,34 @@ public class Manager {
     void play() {
         dealHands();
         seedBoard();
-        p1.makeMove();
+        int i = 0;
+
+        while (i++ < 5) {//deck.hasCard()) {
+            handleMove(p1);
+            handleMove(p2);
+        }
+    }
+
+    private void handleMove(Player p) {
+        ArrayList<PlayedCard> move = p.makeMove();
+        int moveScore = Utilities.scoreForMove(move, board);
+
+        if (moveScore > -1) {
+            hands.get(p).removeAll(move.stream().map((c) -> c.card).collect(Collectors.toList()));
+            board.addAll(move);
+            score.put(p, score.get(p) + moveScore);
+            System.out.println(p.getName() +  "'s move: " + move);
+            System.out.println(p.getName() +  "'s score for that move: " + moveScore);
+        } else if (move.isEmpty()) {
+            deck.addCards(hands.get(p));
+            hands.get(p).clear();
+        }
+        
+        System.out.println(p.getName() +  "'s total score: " + score.get(p));
+        // Replenish cards.
+        while (hands.get(p).size() < 4 && deck.hasCard()) {
+            hands.get(p).add(deck.dealCard());
+        }
     }
     
     
