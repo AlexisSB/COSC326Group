@@ -2,7 +2,7 @@ build: *.java
 	javac *.java -d .
 
 run:
-	java iota/Iota
+	java iota/IotaApp
 
 clean:
 	rm -rf iota
