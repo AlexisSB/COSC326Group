@@ -76,11 +76,11 @@ public class PlayerBasic extends Player{
      */
     public ArrayList<PlayedCard> makeMove() {
         ArrayList<PlayedCard> theBoard = m.getBoard();
-        System.err.println("The Board: " + theBoard);
+        //System.err.println("The Board: " + theBoard);
         hand = m.getHand(this);
-        System.err.println("My Hand : " + hand);
+        //System.err.println("My Hand : " + hand);
         checkValidCoordinates();
-        System.err.println("Valid Coordinates : " + validCoordinates);
+        //System.err.println("Valid Coordinates : " + validCoordinates);
         //Pick a card
         for(Card cardToPlay : hand){
             //Check card for all valid coordinates
@@ -90,8 +90,8 @@ public class PlayerBasic extends Player{
                 ArrayList<PlayedCard> testPlay = new ArrayList<PlayedCard>();
                 testPlay.add(firstCardToPlay);
                 if(Utilities.isLegalMove(testPlay,theBoard)){
-                    System.err.println("Cards to Play: " + testPlay);
-                    System.err.println("Score : " + Utilities.scoreForMove(testPlay,theBoard));
+                    //System.err.println("Cards to Play: " + testPlay);
+                    //System.err.println("Score : " + Utilities.scoreForMove(testPlay,theBoard));
                     return testPlay;
                 }
             }
