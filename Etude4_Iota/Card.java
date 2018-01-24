@@ -1,13 +1,12 @@
 package iota;
 
-import java.util.Objects;
-
 /**
  * An Iota card.
+ *
  * @author Michael Albert
  */
 public class Card {
-    
+
     Colour colour;
     Shape shape;
     int value;
@@ -43,12 +42,10 @@ public class Card {
         }
         return true;
     }
-    
+
     public String toString() {
-        return "" + colour +  shape + value;
+        return "" + colour + shape + value;
     }
-    
-    
-    
-    
+
+
 }
