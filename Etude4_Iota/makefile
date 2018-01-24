@@ -1,7 +1,8 @@
 build: *.java
 	javac *.java -d .
 
-run:
+run:  *.java
+	javac *.java -d .
 	java iota.IotaDisplay
 
 clean:
