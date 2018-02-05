@@ -6,7 +6,7 @@ public class Suffix{
     String suffixString;
     int branchingOptions;
     int count;
-    ArrayList<String> possibleChildren = new ArrayList<String>();
+    HashSet<String> possibleChildren = new HashSet<String>();
 
     public Suffix(String suffixString, int branches, int count){
         this.suffixString = suffixString;
@@ -23,7 +23,10 @@ public class Suffix{
         this.possibleChildren.add(child);
     }
 
-    public void addChildren(ArrayList<String> children){
+    
+        
+
+    public void addChildren(HashSet<String> children){
         this.possibleChildren.addAll(children);
     }
 
