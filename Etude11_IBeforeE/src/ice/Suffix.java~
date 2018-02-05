@@ -1,0 +1,20 @@
+package ice;
+
+
+public class Suffix{
+
+    String suffixString;
+    int branchingOptions;
+    int count;
+
+    public Suffix(String suffixString, int branches, int count){
+        this.suffixString = suffixString;
+        this.branches = branchingOptions;
+        this.count = count;
+    }
+
+    
+    
+
+
+    
