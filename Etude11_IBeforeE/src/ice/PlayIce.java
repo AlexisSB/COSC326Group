@@ -82,9 +82,15 @@ public class PlayIce {
                 for (int currentLength = 1;currentLength < remainingLength+1;currentLength++){
                     System.err.println("currentLength : " + currentLength);
                     step(currentLength);
-                    System.err.println("Previous : " + previousSuffixes);
-                    System.err.println("Current : " + currentSuffixes);
+                    //System.err.println("Previous : " + previousSuffixes);
+                    for(Suffix s: previousSuffixes){
+                        System.err.println(s);
+                    }
 
+                }
+                System.err.println("Current");
+                for(Suffix s: currentSuffixes){
+                    System.err.println(s);
                 }
 
                 //Print Answers
@@ -222,11 +228,23 @@ public class PlayIce {
             Suffix s;
             if(valid){
                 s = new Suffix(curr,0,1);
+                initialListOfSuffixes.add(s);
             }else{
-                s = new Suffix(curr,0,0);
+                boolean validSuffix = false;
+                for(int i = 0;i<alphabetString.length()&& !validSuffix;i++){
+                    if(validator.isValid(alphabetString.charAt(i)+curr)){
+                        s = new Suffix(curr,0,0);
+                        validSuffix = true;
+                        initialListOfSuffixes.add(s);
+                    }
+                }
+                if(!validSuffix){
+                    System.err.println( curr + " Invalid" );
+                }
+                
             }
-            initialListOfSuffixes.add(s);
             return;
+            
         }
         
         for (int i = 0; i < alphabetString.length(); i++) {
