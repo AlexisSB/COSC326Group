@@ -6,7 +6,8 @@ package ice;
  * @author Anthony Dickson
  */
 public class Alphabet {
-    private final String validChars;
+    final String validChars;
+    final int length;
 
     /** 
      * @param letters The letters of the alphabet that should be considered
@@ -14,6 +15,26 @@ public class Alphabet {
     */
     public Alphabet(String letters) {
         this.validChars = letters; 
+        this.length = letters.length();
+    }
+
+    /**
+     * Get the character at position <code>i</code> in the alphabet.
+     * 
+     * @param i The index position of the character to get.
+     * @return The character (as a String) at position <code>i</code>.
+     */
+    public String get(int i) {
+        return validChars.substring(i, i + 1);
+    }
+
+    /**
+     * Get the length of the alphabet.
+     * 
+     * @return the length of the alphabet.
+     */
+    public int length() {
+        return validChars.length();
     }
     
     /**

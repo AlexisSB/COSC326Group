@@ -28,15 +28,16 @@ import java.util.*;
  */
 public class PlayIce {
     final Validator validator;
-    //Do we need this string? Can we store alphaet object and use to string?
-    final String alphabetString;
-    List<Instance> instances = new ArrayList<>();
+    final Alphabet alphabet;
+    final List<Rule> rules;
+    final List<Instance> instances;
     ArrayDeque<String> chars = new ArrayDeque<>();
-
+    
     public PlayIce(Validator validator, List<Instance> instances) {
         this.validator = validator;
+        this.alphabet = validator.alphabet;
+        this.rules = validator.rules;
         this.instances = instances;
-        this.alphabetString = validator.alphabet.toString();
     }
 
     public void play() {
@@ -44,208 +45,116 @@ public class PlayIce {
             play(instance);
         }
     }
-
-    /* Suffix list variables for the dynamic calculation methods */
-    ArrayList<Suffix> initialListOfSuffixes = new ArrayList<Suffix>();
-    ArrayList<Suffix> previousSuffixes = new ArrayList<Suffix>();
-    ArrayList<Suffix> currentSuffixes = new ArrayList<Suffix>();
     
     public void play(Instance instance) {
         if (instance.type == Instance.Type.SEQUENCE) {
             System.out.println((validator.isValid(instance.toString())) ? 
                 "Valid" : "Invalid");
         } else {
-
-            /**
-             * Check if there are no rules to consider,
-             * or if the desired length is less than the rule length.
-             * If true for either then just brute force it.
-             * NB could change this to just return n^l
-             * where n is the alphabet size and l is the desired length.
-             * @author Alexis Barltrop
-             */
-            if(maxRuleLength(rules) == -1 ||Integer.parseInt(instance.value) < maxRuleLength(rules)){
-                System.out.println(count(Integer.parseInt(instance.value)));
-            }else{
-
-                //Count method will generate initial list of suffixes
-                createInitialList(maxRuleLength(rules)-1);
-                
-                //Generate list of children links between suffixes
-                findBranches(initialListOfSuffixes);
-                
-                //Figure out how many more steps are needed to get to the target length.
-                int remainingLength = Integer.parseInt(instance.value)- maxRuleLength(rules)+1;
-                System.err.println("Remaining Length : " + remainingLength);
-                
-                //Step through the algortihm that many times.
-                for (int currentLength = 1;currentLength < remainingLength+1;currentLength++){
-                    System.err.println("currentLength : " + currentLength);
-                    step(currentLength);
-                    System.err.println("Previous : " + previousSuffixes);
-                    System.err.println("Current : " + currentSuffixes);
-
-                }
-
-                //Print Answers
-                System.out.println("Brute Force: " + count(Integer.parseInt(instance.value)));
-                System.out.println("Dynamic : " + total(currentSuffixes) );
-
-                //Clean up
-                initialListOfSuffixes.clear();
-                previousSuffixes.clear();
-                currentSuffixes.clear();
-                
-            }
+            System.out.println(count(Integer.parseInt(instance.value)));
         }
-    }
-
-    
-    /**
-     * Updates the count of strings with a given suffix.
-     * Increases the length of string by 1.
-     * @author Alexis Barltrop
-     */
-    private void step(int currentLength){
-        
-        //Create copy of suffixes and reset the count.
-        
-        if (currentLength ==1){
-            previousSuffixes = initialListOfSuffixes;
-            for(Suffix s : previousSuffixes){
-                Suffix copy = new Suffix(s.suffixString,s.branchingOptions,0);
-                copy.addChildren(s.possibleChildren);
-                currentSuffixes.add(copy);
-            }
-            
-        }else{
-            //make a copt of current Suffixes and set to previous.
-            previousSuffixes.clear();
-            for(Suffix s : currentSuffixes){
-                Suffix copy = new Suffix(s.suffixString,s.branchingOptions,s.count);
-                copy.addChildren(s.possibleChildren);
-                previousSuffixes.add(copy);
-            }
-            //System.err.println("Previous : " + previousSuffixes);
-        }
-        
-        for(Suffix current : currentSuffixes){
-            current.count =0;
-        }
-        
-        for(Suffix previous: previousSuffixes ){
-            for(String child: previous.possibleChildren){
-                for(Suffix next: currentSuffixes){
-                    if(next.suffixString.equals(child)){
-                        next.count += previous.count;
-                    }
-                }
-            }
-        }
-        //for each child add the count of that suffix to the count of the child.
-        //Update the count for the other suffixes based on what expansion are allowed.
-    }
-
-    /**
-     * Creates the list of valid substrings that can be created from a given suffix.
-     * Directly modifies the suffixes.
-     * @param suffixes - list of suffixes to find substrings from.
-     * @author Alexis Barltrop
-     */
-    private void findBranches(ArrayList<Suffix> suffixes){
-        
-        for (Suffix s: suffixes){
-            //System.err.println("Suffix : " + s);
-            
-            //Add each one of the letters from the alphabet to the end of the suffix
-            for (int i = 0; i < alphabetString.length(); i++) {
-                String nextString = s.suffixString + alphabetString.charAt(i);
-                //System.err.println(nextString);
-                
-                //Check if it forms a valid substring//
-                if(validator.isValid(nextString)|| !(validator.isValid(s.suffixString))){
-                    // System.err.println("Valid");
-                    
-                    //if yes add the child created to the list of possible children.//
-                    s.branchingOptions++;
-                    for(Suffix searchSuffix : suffixes){
-                        if (searchSuffix.suffixString.equals(nextString.substring(1))){
-                            s.addChild(searchSuffix.suffixString);
-                        }
-                        
-                    }
-                }
-                
-                        
-            }
-        }
-    }
-    
-    /**
-     * Calculates the sum of the suffix count to get the final answer.
-     * @param suffixes - list of suffixes to sum.
-     * @return the sum of all the counts in the suffixes.
-     */
-    private int total(ArrayList<Suffix> suffixes){
-        int total = 0;
-        for (Suffix s : suffixes){
-            total += (s.count);
-        }
-        return total;
-    }
-
-    /**
-     * Create a list of all the possible combinations of letters.
-     * Does it for a given length using the global alphabet.
-     */
-    private void createInitialList(int targetLength){
-        createInitialList(targetLength,0);          
-    }
-
-    private void createInitialList(int targetLength, int depth){
-        String curr = String.join("", chars);
-        boolean valid = validator.isValid(curr);
-
-        /**
-         * If the current string length is the same as the target,
-         * i.e. the max length rule then add it to the list of suffixes.
-         * @author Alexis
-         */
-        if(curr.length() == targetLength /* && valid*/){
-            //System.err.println(curr);
-            /*if(valid){
-              System.err.println("\tValid");
-              }else{
-              System.err.println("\tInvalid");
-              }
-            */
-            Suffix s;
-            if(valid){
-                s = new Suffix(curr,0,1);
-            }else{
-                s = new Suffix(curr,0,0);
-            }
-            initialListOfSuffixes.add(s);
-            return;
-        }
-        
-        for (int i = 0; i < alphabetString.length(); i++) {
-            chars.add(alphabetString.substring(i, i + 1));
-            //System.err.println(chars);
-            createInitialList(targetLength, depth + 1);
-            chars.removeLast();
-        }
-
     }
     
     private long count(int targetLength) {
+        if (rules.size() == 0) return (long) Math.pow(alphabet.length, targetLength);
+
+        // Get max rule length.
+        int maxRuleLength = 0;
+
+        for (Rule rule : rules) {
+            int ruleLength = rule.maxLength();
+
+            if (ruleLength > maxRuleLength) {
+                maxRuleLength = ruleLength;
+            }
+        }
+
+        if (targetLength <= maxRuleLength) return count(targetLength, 0);
+        
+        // Get valid suffixes
+        Set<Suffix> suffixes = new HashSet<>();
+        // List<HashMap<String, Integer>> suffixCounts = new ArrayList<HashMap<String, Integer>>();
+        getValidSuffixes(maxRuleLength, 0, maxRuleLength - 1, suffixes);//, suffixCounts);
+
+        // for (Suffix s : suffixes) {
+        //     System.out.println(s);
+        // }
+
+        HashMap<String, Integer> lastCol = new HashMap<>();
+        
+        for (Suffix suffix : suffixes) {
+            lastCol.put(suffix.value, countSuffix(maxRuleLength, 0, suffix.value));
+            // System.out.println(suffix.value + " appears " + lastCol.get(suffix.value) + " times at length " + (maxRuleLength));
+        }
+        
+        
+        HashMap<String, Integer> currCol = new HashMap<>();
+        
+        for (int i = maxRuleLength + 1; i < targetLength; i++) {
+            for (Suffix suffix : suffixes) {
+                int count = 0;
+                
+                // System.out.print(suffix.value + " appears ");
+                for (Suffix other : suffixes) {
+                    if (other.hasChild(suffix.value)) {
+                        count += lastCol.get(other.value);
+                        // System.out.print(lastCol.get(other.value) + " + ");
+                    }
+                }
+                
+                currCol.put(suffix.value, count);
+                // System.out.println(" = " + currCol.get(suffix.value) + " times at length " + (i));
+            }
+
+            lastCol = new HashMap<String, Integer>(currCol);
+        }
+
+        long result = 0L;
+
+        for (Suffix suffix : suffixes) {
+            // System.out.println(suffix.value + " appears " + lastCol.get(suffix.value) + " times at length " + (targetLength - 1));
+            result += (long) lastCol.get(suffix.value) * suffix.children.size();
+        }
+
+        System.out.println("Dynamic result: " + result);
+
+
+
+        // return result;
+
+        // Count how many times each suffix appears in first couple length strings.
+        // for (int i = 1; i <= 2; i++) {
+        //     suffixCounts.add(getSuffixCounts(i))
+        // }
+
+        // for (HashMap<String, Integer> col : suffixCounts) {
+        //     for (Map.Entry<String, Integer> cell : col.entrySet()) {
+        //         System.out.print(cell.getKey() + " appears " + cell.getValue() + " times. ");
+        //     }
+
+        //     System.out.println();
+        // }
+
+        // HashMap<String, Integer> lastCol = new HashMap<>(suffixes);
+        
+        // // for (int i = suffixCounts.size() + 1; i < targetLength; i++) {
+        //     HashMap<String, Integer> counts = new HashMap<>(suffixes);
+
+        //     for (Suffix suffix : suffixes) {
+        //         for (String child : suffix.children) {
+        //             counts.put(suffix, counts.get(suffix) + suffixCounts.get(i - 1).get(child));
+        //         }
+        //     }
+        // }
+        
         return count(targetLength, 0);
     }
+    
 
-    private long count(int target, int depth) {
+    private long count(int target, int depth) {        
         String curr = String.join("", chars);
         boolean valid = validator.isValid(curr);
-
+        
         if (depth == target) {
             return (valid) ? 1 : 0;
         }
@@ -256,9 +165,8 @@ public class PlayIce {
         
         long count = 0;
         
-        for (int i = 0; i < alphabetString.length(); i++) {
-            chars.add(alphabetString.substring(i, i + 1));
-            //System.err.println(chars);
+        for (int i = 0; i < alphabet.length(); i++) {
+            chars.add(alphabet.get(i));
             count += count(target, depth + 1);
             chars.removeLast();
         }
@@ -266,27 +174,149 @@ public class PlayIce {
         return count;
     }
 
-    static List<Rule> rules = new ArrayList<>();
-    static Alphabet alphabet;
+    /**
+     * Get the valid suffixes.
+     * 
+     * @param out Where to store the suffixes
+     * @param counts Where to store the counts for each suffix per length string.
+     */
+    private void getValidSuffixes(int target, int depth, int suffixLength, Set<Suffix> out) {
+        String curr = String.join("", chars);
+        boolean valid = validator.isValid(curr);
+        
+        if (depth == target) {
+            if (valid) {
+                String suffix = curr.substring(curr.length() - suffixLength);
+                out.add(new Suffix(suffix));
+            }
+
+            return;
+        }
+
+        if (!valid) return;
+        
+        for (int i = 0; i < alphabet.length(); i++) {
+            chars.add(alphabet.get(i));
+            getValidSuffixes(target, depth + 1, suffixLength, out);
+            chars.removeLast();
+        }
+    }
+
+    private int countSuffix(int targetLength, int depth, String suffix) {        
+        String curr = String.join("", chars);
+        boolean valid = validator.isValid(curr);
+
+        if (depth == targetLength) {
+            // System.out.println(suffix + " appears at end of " + curr + ": " + curr.endsWith(suffix));
+            return (curr.endsWith(suffix) && valid) ? 1 : 0;
+        }
+
+        if (!valid) {
+            return 0;
+        } 
+        
+        int count = 0;
+        
+        for (int i = 0; i < alphabet.length(); i++) {
+            chars.add(alphabet.get(i));
+            //System.err.println(chars);
+            count += countSuffix(targetLength, depth + 1, suffix);
+            chars.removeLast();
+        }
+
+        return count;
+    }
+
+    private class Suffix{
+        final String value;
+        final List<String> children;
     
+        public Suffix(String value) {
+            this.value = value;
+            this.children = getChildren();
+        }
+    
+        private List<String> getChildren() {
+            List<String> children = new ArrayList<>();
+    
+            for (int i = 0; i < alphabet.length(); i++) {
+                String child = value + alphabet.get(i);
+                boolean isRule = false;
+
+                // for (Rule rule : rules) {
+                //     if (value.equals(rule.prohibited)) isRule = true;
+                // }
+
+                if (validator.isValid(child) || isRule) {
+                    children.add(child.substring(1));
+                }
+            }
+
+            if (children.size() == 0) {
+                for (int i = 0; i < alphabet.length(); i++) {
+                    String child = value.substring(value.length() - 1) + alphabet.get(i);
+
+                    if (validator.isValid(child)) {
+                        children.add(value.substring(1) + alphabet.get(i));
+                    }
+                }
+            }
+
+            return children;
+        }
+
+        public boolean hasChild(String child) {
+            return children.contains(child);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+
+            for (int i = 0; i < value.length(); i++) {
+                hash = hash * 11 + value.charAt(i);
+            }
+
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return this.value.equals(((Suffix) o).value);
+        }
+    
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(value);
+            sb.append(" - ");
+            sb.append(children.size());
+            sb.append(" children:");
+            
+            for (String expansion : children) {
+                sb.append(" " + expansion);
+            }
+
+            return sb.toString();
+        }
+    }
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         
         // Process Input.
-        alphabet = new Alphabet(in.nextLine());
-   
-
+        Alphabet alphabet = new Alphabet(in.nextLine());
+        
         String line = "";
+        List<Rule> rules = new ArrayList<>();
 
         //add the rules
         do {
             line = in.nextLine();
             
             if (!line.equals("")) rules.add(new Rule(line));
-        } while (!line.equals(""));
-        //Calculate max length of rule
-        System.err.println("Max Rule Length :" + maxRuleLength(rules));
-        
+        } while (!line.equals(""));        
         
         Validator validator = new Validator(alphabet, rules);        
         List<Instance> instances = new ArrayList<>();
@@ -301,15 +331,5 @@ public class PlayIce {
         iceGame.play();
 
         in.close();
-    }
-
-    public static int maxRuleLength(List<Rule> rules){
-        int maxLength = -1;
-        for (Rule r: rules){
-            if( r.lengthOfRule() > maxLength){
-                maxLength = r.lengthOfRule();
-            }
-        }
-        return maxLength;
     }
 }

@@ -1,7 +1,6 @@
 package ice;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.regex.*;
 
 /**
@@ -13,10 +12,11 @@ import java.util.regex.*;
  * @author Anthony Dickson
  */
 public class Rule {
-    private final String prohibited;
-    private final List<String> exceptions = new ArrayList<>();
-    private final Pattern pattern;
-
+    final String prohibited;
+    final List<String> exceptions = new ArrayList<>();
+    final Pattern pattern;
+    final Pattern negativePattern;
+    
     /**
      * <p>Construct a rule from a string that contains the prohibited character
      * sequence followed by the exception prefix(es). The string should be 
@@ -27,6 +27,7 @@ public class Rule {
      */
     public Rule(String str) {
         String[] items = str.split("\\s");
+        // this = new Rule(items[0], Arrays.copyOf(items, 1, items.length));
 
         this.prohibited = items[0];
 
@@ -34,34 +35,39 @@ public class Rule {
             this.exceptions.add(items[i]);
         }
         
-        this.pattern = Pattern.compile(buildPatternString());
+        this.pattern = Pattern.compile(buildPatternString(true));
+        this.negativePattern = Pattern.compile(buildPatternString(false));
     }
     
-    private String buildPatternString() {
+        /**
+         * Construct a rule with the given prohibited string and exceptions.
+         * 
+         * @param prohibited The character sequence that should be prohibited.
+         * @param exceptions The character sequences for which 
+         * <code>prohibited</code> may succeed.
+         */
+        public Rule(String prohibited, List<String> exceptions) {
+            this.prohibited = prohibited;
+            this.exceptions.addAll(exceptions);
+            this.pattern = Pattern.compile(buildPatternString(true));
+            this.negativePattern = Pattern.compile(buildPatternString(false));
+        }
+    
+    private String buildPatternString(boolean usePositiveLookbehind) {
         StringBuilder sb = new StringBuilder();
 
-            
         for (String exception : exceptions) {
-            sb.append("(?<!");
+            if (usePositiveLookbehind) {
+                sb.append("(?<=");
+            } else {
+                sb.append("(?<!");
+            }
             sb.append(exception);
             sb.append(")");
         }
 
         sb.append(prohibited);
         return sb.toString();
-    }
-
-    /**
-     * Construct a rule with the given prohibited string and exceptions.
-     * 
-     * @param prohibited The character sequence that should be prohibited.
-     * @param exceptions The character sequences for which 
-     * <code>prohibited</code> may succeed.
-     */
-    public Rule(String prohibited, List<String> exceptions) {
-        this.prohibited = prohibited;
-        this.exceptions.addAll(exceptions);
-        this.pattern = Pattern.compile(buildPatternString());
     }
 
     /**
@@ -72,7 +78,15 @@ public class Rule {
      * <code>false</code> otherwise.
      */
     public boolean isValid(String str) {
-        return !pattern.matcher(str).find();
+        /** TODO: fix false negatives for input: 
+         * abc
+         * ab c
+         * bc aa
+         * 
+         * cabaabc
+         * aabc
+         */
+        return !negativePattern.matcher(str).find();
     }
 
     /**
@@ -83,11 +97,48 @@ public class Rule {
      * @param rules The list of rules to check against.
      */
     public static boolean isValid(List<Rule> rules, String str) {
+        // Collections.sort(rules, new Comparator<Rule>() {
+        //     @Override
+        //     public int compare(Rule r1, Rule r2) {
+        //         return r1.maxLength() - r2.maxLength();
+        //     }
+        // });
+        // String original = str;
+        // // Remove prohibited strings that occur after an exception.
+        // for (Rule rule : rules) {
+        //     str = rule.pattern.matcher(str).replaceAll("*");
+            
+        // }        
+        // Check that the remaining string conforms to all rules.
         for (Rule rule : rules) {
-            if (!rule.isValid(str)) return false;
+            if (!rule.isValid(str)) {
+                // System.out.print(original + " => ");
+                // System.out.println(str);
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Gets the length of the prohibited string plus the length of the longest
+     * exception for this rule.
+     * 
+     * @return the length of the prohibited string plus the length of the longest
+     * exception for this rule.
+     */
+    public int maxLength() {
+        int length = prohibited.length();
+        int maxExceptionLength = 0;
+        
+        for (String s : exceptions) {
+            if(s.length() > maxExceptionLength) {
+                maxExceptionLength = s.length();
+            }
         }
 
-        return true;
+        return length + maxExceptionLength;
     }
 
     @Override
@@ -115,16 +166,4 @@ public class Rule {
         return sb.toString();
     }
 
-    public int lengthOfRule(){
-        int l = prohibited.length();
-        int maxExceptionLength = -1;
-        
-        for (String s : exceptions){
-            if(s.length()> maxExceptionLength){
-                maxExceptionLength = s.length();
-            }
-        }
-        //System.err.println("Rule length: " + (l+maxExceptionLength));
-        return l+ maxExceptionLength;
-    }
  }
