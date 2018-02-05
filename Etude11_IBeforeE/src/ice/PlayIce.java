@@ -64,12 +64,12 @@ public class PlayIce {
              * where n is the alphabet size and l is the desired length.
              * @author Alexis Barltrop
              */
-            if(maxRuleLength(rules) == -1 ||Integer.parseInt(instance.value) < maxRuleLength(rules)){
+            if(maxRuleLength(rules) == -1 ||Integer.parseInt(instance.value) <= maxRuleLength(rules)){
                 System.out.println(count(Integer.parseInt(instance.value)));
             }else{
 
                 //Count method will generate initial list of suffixes
-                System.out.println(count(maxRuleLength(rules)));
+                System.err.println(count(maxRuleLength(rules)));
                 
                 //Generate list of children links between suffixes
                 findBranches(initialListOfSuffixes);
