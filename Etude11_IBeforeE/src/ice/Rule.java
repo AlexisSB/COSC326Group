@@ -115,16 +115,27 @@ public class Rule {
         return sb.toString();
     }
 
-    public int lengthOfRule(){
-        int l = prohibited.length();
+    public int totalLengthOfRule(){
+        int length = maxExceptionLength() + lengthOfRule();
+        
+        //System.err.println("Rule length: " + (l+maxExceptionLength));
+        return length;
+    }
+
+    public int maxExceptionLength(){
         int maxExceptionLength = -1;
         
         for (String s : exceptions){
-            if(s.length()> maxExceptionLength){
+            if(s.length() > maxExceptionLength){
                 maxExceptionLength = s.length();
             }
         }
-        //System.err.println("Rule length: " + (l+maxExceptionLength));
-        return l+ maxExceptionLength;
+        return maxExceptionLength;
     }
- }
+    
+    public int lengthOfRule(){
+        return prohibited.length();
+    }
+
+}
+

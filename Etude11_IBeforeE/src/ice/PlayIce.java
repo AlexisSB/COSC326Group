@@ -40,6 +40,7 @@ public class PlayIce {
     }
 
     public void play() {
+        
         for (Instance instance : instances) {
             play(instance);
         }
@@ -67,7 +68,6 @@ public class PlayIce {
 
             int targetLength = Integer.parseInt(instance.value);
             int ruleLength = maxRuleLength(rules);
-            /*TODO find way to measure longest exception*/
             int exceptionLength = maxExceptionLength(rules);
             int totalLength = ruleLength + exceptionLength;
             System.err.println("Target Length: " + targetLength);
