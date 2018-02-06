@@ -64,38 +64,51 @@ public class PlayIce {
              * where n is the alphabet size and l is the desired length.
              * @author Alexis Barltrop
              */
-            if(maxRuleLength(rules) == -1 ||Integer.parseInt(instance.value) < maxRuleLength(rules)){
-                System.out.println(count(Integer.parseInt(instance.value)));
+
+            int targetLength = Integer.parseInt(instance.value);
+            int ruleLength = maxRuleLength(rules);
+            /*TODO find way to measure longest exception*/
+            int exceptionLength = maxExceptionLength(rules);
+            int totalLength = ruleLength + exceptionLength;
+            System.err.println("Target Length: " + targetLength);
+            System.err.println("Rule Length : " + ruleLength);
+            System.err.println("Exception Length : " + exceptionLength);
+            if(maxRuleLength(rules) == -1 || targetLength <= totalLength){
+                System.out.println(count(targetLength));
             }else{
 
-                //Count method will generate initial list of suffixes
-                createInitialList(maxRuleLength(rules)-1);
+                createInitialList(totalLength-1);
                 
-                //Generate list of children links between suffixes
-                findBranches(initialListOfSuffixes);
+                findChildren(initialListOfSuffixes);
+
+                int numberOfBlocks = targetLength/ruleLength;
                 
                 //Figure out how many more steps are needed to get to the target length.
-                int remainingLength = Integer.parseInt(instance.value)- maxRuleLength(rules)+1;
+                int remainingLength = targetLength-totalLength;
                 System.err.println("Remaining Length : " + remainingLength);
                 
                 //Step through the algortihm that many times.
-                for (int currentLength = 1;currentLength < remainingLength+1;currentLength++){
-                    System.err.println("currentLength : " + currentLength);
+                int steps = 0;
+                for (int currentLength = 0; currentLength < remainingLength+1 ;currentLength++){
+                    System.err.println("currentLength : " + (currentLength+totalLength));
+                    System.err.println("Total Length : " + totalLength);
                     step(currentLength);
+                    steps++;
                     //System.err.println("Previous : " + previousSuffixes);
                     for(Suffix s: previousSuffixes){
-                        System.err.println(s);
+                        //System.err.println(s);
                     }
 
                 }
-                System.err.println("Current");
+                System.err.println("Steps: " + steps);
+                //System.err.println("Current");
                 for(Suffix s: currentSuffixes){
-                    System.err.println(s);
+                    // System.err.println(s);
                 }
 
                 //Print Answers
                 System.out.println("Brute Force: " + count(Integer.parseInt(instance.value)));
-                System.out.println("Dynamic : " + total(currentSuffixes) );
+                //System.out.println("Dynamic : " + total(currentSuffixes) );
 
                 //Clean up
                 initialListOfSuffixes.clear();
@@ -115,13 +128,19 @@ public class PlayIce {
     private void step(int currentLength){
         
         //Create copy of suffixes and reset the count.
-        
-        if (currentLength ==1){
+        if (currentSuffixes.isEmpty()){
+            
+            System.err.println("First Step");
+            //if (currentLength ==0){
             previousSuffixes = initialListOfSuffixes;
             for(Suffix s : previousSuffixes){
-                Suffix copy = new Suffix(s.suffixString,s.branchingOptions,0);
+                Suffix copy = new Suffix(s.suffixString,s.branchingOptions,s.count);
                 copy.addChildren(s.possibleChildren);
                 currentSuffixes.add(copy);
+            }
+
+            for (Suffix s : currentSuffixes){
+                System.err.println(s);
             }
             
         }else{
@@ -158,18 +177,21 @@ public class PlayIce {
      * @param suffixes - list of suffixes to find substrings from.
      * @author Alexis Barltrop
      */
-    private void findBranches(ArrayList<Suffix> suffixes){
+    private void findChildren(ArrayList<Suffix> suffixes){
+        /*TODO make dynamic*/
+        int ruleLength = maxRuleLength(rules);
         
         for (Suffix s: suffixes){
-            //System.err.println("Suffix : " + s);
-            
+
             //Add each one of the letters from the alphabet to the end of the suffix
             for (int i = 0; i < alphabetString.length(); i++) {
                 String nextString = s.suffixString + alphabetString.charAt(i);
                 //System.err.println(nextString);
                 
                 //Check if it forms a valid substring//
-                if(validator.isValid(nextString)|| !(validator.isValid(s.suffixString))){
+                /* TODO find way to measure rule length*/
+                //System.err.println("Last two: " + nextString.substring(nextString.length()-ruleLength));
+                if(validator.isValid(nextString.substring(nextString.length()-ruleLength))){
                     // System.err.println("Valid");
                     
                     //if yes add the child created to the list of possible children.//
@@ -180,9 +202,22 @@ public class PlayIce {
                         }
                         
                     }
+                    
+                    
+                }else{
+                    if(validator.isValid(nextString)){
+                        for(Suffix searchSuffix : suffixes){
+                            if (searchSuffix.suffixString.equals(nextString.substring(1))){
+                                s.addChild(searchSuffix.suffixString);
+                            }
+                        
+                        }
+                    }else{
+                        //System.err.println("Rejecting : " + nextString);
+                    }
                 }
                 
-                        
+                
             }
         }
     }
@@ -192,8 +227,8 @@ public class PlayIce {
      * @param suffixes - list of suffixes to sum.
      * @return the sum of all the counts in the suffixes.
      */
-    private int total(ArrayList<Suffix> suffixes){
-        int total = 0;
+    private long total(ArrayList<Suffix> suffixes){
+        long total = 0;
         for (Suffix s : suffixes){
             total += (s.count);
         }
@@ -217,19 +252,15 @@ public class PlayIce {
          * i.e. the max length rule then add it to the list of suffixes.
          * @author Alexis
          */
-        if(curr.length() == targetLength /* && valid*/){
-            //System.err.println(curr);
-            /*if(valid){
-              System.err.println("\tValid");
-              }else{
-              System.err.println("\tInvalid");
-              }
-            */
+        if(curr.length() == targetLength){
             Suffix s;
             if(valid){
                 s = new Suffix(curr,0,1);
                 initialListOfSuffixes.add(s);
             }else{
+                s = new Suffix(curr,0,0);
+                initialListOfSuffixes.add(s);
+                /*
                 boolean validSuffix = false;
                 for(int i = 0;i<alphabetString.length()&& !validSuffix;i++){
                     if(validator.isValid(alphabetString.charAt(i)+curr)){
@@ -237,11 +268,9 @@ public class PlayIce {
                         validSuffix = true;
                         initialListOfSuffixes.add(s);
                     }
-                }
-                if(!validSuffix){
-                    System.err.println( curr + " Invalid" );
-                }
-                
+                    }*/
+                //System.err.println( curr + " Invalid" );
+                                
             }
             return;
             
@@ -303,7 +332,7 @@ public class PlayIce {
             if (!line.equals("")) rules.add(new Rule(line));
         } while (!line.equals(""));
         //Calculate max length of rule
-        System.err.println("Max Rule Length :" + maxRuleLength(rules));
+        //System.err.println("Max Rule Length :" + maxRuleLength(rules));
         
         
         Validator validator = new Validator(alphabet, rules);        
@@ -320,6 +349,7 @@ public class PlayIce {
 
         in.close();
     }
+    
 
     public static int maxRuleLength(List<Rule> rules){
         int maxLength = -1;
@@ -330,4 +360,16 @@ public class PlayIce {
         }
         return maxLength;
     }
+
+    public static int maxExceptionLength(List<Rule> rules){
+        int maxLength = -1;
+        for (Rule r: rules){
+            if( r.maxExceptionLength() > maxLength){
+                maxLength = r.maxExceptionLength();
+            }
+        }
+        return maxLength;
+    }
+
+    
 }
