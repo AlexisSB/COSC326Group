@@ -3,28 +3,15 @@ package ice;
 import java.util.*;
 
 /**
+ * COSC326 Etude 11 I Before E SS 2018
+ *
  * An application that plays the 'ice game'.
  * 
- * Description:
- * I Before E
- * English spelling has a lot of rules and a lot of exceptions. For instance 
- * “I before E except after C or . . . ”. Martians find these very quaint and 
- * have made up a game involving variations on the rules. The game is to 
- * identify from a set of rules, which of a list of words are correctly spelled
- * according to the rules. More advanced players are asked to figure out how 
- * many possible words there are of a given length. In a particularly simple 
- * version of the game the alphabet used consists of the three characters 
- * i, c, and e, and there is only one rule – “ i before e except after c”. In 
- * this version of the game, all of the words ice, iiiiiiiii, iiiieeeeecei are 
- * valid, but the words eic, ieceiei, and apple are not. The number of valid 
- * words of length three is 22 – of the 27 unrestricted words of length three 
- * using only the allowed characters there are three invalid ones beginning ei, 
- * and two ending ei. Note that scientists have observed that just because ei is 
- * permitted after c (while otherwise forbidden) this does not imply that ie is 
- * forbidden after c. More complex versions of the game also exist – and the 
- * whole family of them are referred to as “the ice game”
+ * Description for etude availible at:
+ * http://www.cs.otago.ac.nz/cosc326/etudes2018ss/11.pdf
+ *
  * 
- * @author Anthony Dickson
+ * @author Anthony Dickson, Alexis Barltrop, Marcus Lee, Topic Goran
  */
 public class PlayIce {
     final Validator validator;
@@ -70,9 +57,9 @@ public class PlayIce {
             int ruleLength = maxRuleLength(rules);
             int exceptionLength = maxExceptionLength(rules);
             int totalLength = ruleLength + exceptionLength;
-            System.err.println("Target Length: " + targetLength);
-            System.err.println("Rule Length : " + ruleLength);
-            System.err.println("Exception Length : " + exceptionLength);
+            //System.err.println("Target Length: " + targetLength);
+            //System.err.println("Rule Length : " + ruleLength);
+            //System.err.println("Exception Length : " + exceptionLength);
             //System.err.println("Total Length : " + totalLength);
             if(maxRuleLength(rules) == -1 || targetLength <= totalLength-1){
                 System.out.println(count(targetLength));
@@ -80,9 +67,9 @@ public class PlayIce {
 
                 if(initialListOfSuffixes.isEmpty()){
                     createInitialList(totalLength-1);
-                    System.err.println("Created Initial List");
+                    //System.err.println("Created Initial List");
                     findChildren(initialListOfSuffixes);
-                    System.err.println("Found Children");
+                    //System.err.println("Found Children");
                 }
                 
                 /*Figure out how many more steps are needed to get to the target length.*/
@@ -92,7 +79,6 @@ public class PlayIce {
                 int steps = 0;
                 for (int currentLength = 0; currentLength < remainingLength+1 ;currentLength++){
                     //System.err.println("currentLength : " + (currentLength+totalLength));
-                    
                     step(currentLength);
                     steps++;
                     //System.err.println("Previous : " + previousSuffixes);
@@ -101,8 +87,9 @@ public class PlayIce {
                 //System.err.println("Current");
                 
                 /*Print Answers*/
-                System.out.println("Brute Force: " + count(Integer.parseInt(instance.value)));
-                System.out.println("Dynamic : " + total(currentSuffixes) );
+                //System.out.println("Brute Force: " + count(Integer.parseInt(instance.value)));
+                //System.out.print("Dynamic : ");
+                System.out.println(total(currentSuffixes));
 
                 /*Clean up*/
                 previousSuffixes.clear();
