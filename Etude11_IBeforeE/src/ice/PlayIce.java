@@ -73,14 +73,14 @@ public class PlayIce {
             System.err.println("Target Length: " + targetLength);
             System.err.println("Rule Length : " + ruleLength);
             System.err.println("Exception Length : " + exceptionLength);
-            if(maxRuleLength(rules) == -1 || targetLength <= totalLength){
+            if(maxRuleLength(rules) == -1 || targetLength <= totalLength-1){
                 System.out.println(count(targetLength));
             }else{
 
                 createInitialList(totalLength-1);
-                
+                System.err.println("Created Initial List");
                 findChildren(initialListOfSuffixes);
-
+                System.err.println("Found Children");
                 int numberOfBlocks = targetLength/ruleLength;
                 
                 //Figure out how many more steps are needed to get to the target length.
@@ -108,7 +108,7 @@ public class PlayIce {
 
                 //Print Answers
                 System.out.println("Brute Force: " + count(Integer.parseInt(instance.value)));
-                //System.out.println("Dynamic : " + total(currentSuffixes) );
+                System.out.println("Dynamic : " + total(currentSuffixes) );
 
                 //Clean up
                 initialListOfSuffixes.clear();
@@ -191,32 +191,34 @@ public class PlayIce {
                 //Check if it forms a valid substring//
                 /* TODO find way to measure rule length*/
                 //System.err.println("Last two: " + nextString.substring(nextString.length()-ruleLength));
-                if(validator.isValid(nextString.substring(nextString.length()-ruleLength))){
-                    // System.err.println("Valid");
-                    
-                    //if yes add the child created to the list of possible children.//
-                    s.branchingOptions++;
+
+                //For each rule, check the last n characters to see if it violates them.
+                // N changes depending on the rule length.
+                // If yes then check against that exception.
+                //If passes with exception then its okay to add.
+
+                boolean rejectChild = false;
+                for (Rule r : rules){
+                    if(r.isValid(nextString.substring(nextString.length()-r.lengthOfRule()))){
+                        //System.err.println("Rule is Valid");
+                                               
+                    }else if(r.isValid(nextString.substring(nextString.length()-(r.lengthOfRule()+r.maxExceptionLength() )))){
+                        
+                        //System.err.println("Rule is Valid with exception" );
+                        
+                    }else{
+                        //System.err.println("Rejecting : " + nextString);
+                        rejectChild = true;
+                    }
+                }
+                
+                if (!rejectChild){
                     for(Suffix searchSuffix : suffixes){
                         if (searchSuffix.suffixString.equals(nextString.substring(1))){
                             s.addChild(searchSuffix.suffixString);
                         }
-                        
-                    }
-                    
-                    
-                }else{
-                    if(validator.isValid(nextString)){
-                        for(Suffix searchSuffix : suffixes){
-                            if (searchSuffix.suffixString.equals(nextString.substring(1))){
-                                s.addChild(searchSuffix.suffixString);
-                            }
-                        
-                        }
-                    }else{
-                        //System.err.println("Rejecting : " + nextString);
                     }
                 }
-                
                 
             }
         }
