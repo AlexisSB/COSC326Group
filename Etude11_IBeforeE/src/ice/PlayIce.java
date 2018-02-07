@@ -22,7 +22,7 @@ public class PlayIce {
     /*Suffix list variables for the dynamic calculation methods */
     //ArrayList<Suffix> initialListOfSuffixes = new ArrayList<Suffix>();
     //ArrayList<Suffix> previousSuffixes = new ArrayList<Suffix>();
-    ArrayList<Suffix> currentSuffixes = new ArrayList<Suffix>();
+    HashMap<String,Suffix> currentSuffixes = new HashMap<String,Suffix>();
 
     public PlayIce(Validator validator, List<Instance> instances) {
         this.validator = validator;
@@ -49,7 +49,6 @@ public class PlayIce {
              * where n is the alphabet size and l is the desired length.
              * @author Alexis Barltrop
              */
-
             int targetLength = Integer.parseInt(instance.value);
             int ruleLength = maxRuleLength(rules);
             int exceptionLength = maxExceptionLength(rules);
@@ -62,9 +61,9 @@ public class PlayIce {
             } else {
                 if(currentSuffixes.isEmpty()){
                     createInitialList(totalLength - 1);
-                    System.err.println("Done initial list");
+                    //System.err.println("Done initial list");
                     findChildren(currentSuffixes);
-                    System.err.println("Done children");
+                    //System.err.println("Done children");
                 }else{
                     setCountToZero(currentSuffixes);
                 }
@@ -77,7 +76,7 @@ public class PlayIce {
                 }
                 
                 /*Print Answer*/
-                System.out.println( "Brute Force: " + count(targetLength));
+                //System.out.println( "Brute Force: " + count(targetLength));
                 System.out.println(total(currentSuffixes));
 
                 /*Clean up*/
@@ -89,10 +88,10 @@ public class PlayIce {
         }
     }
 
-    public static void setCountToZero(ArrayList<Suffix> suffixes){
-        for (Suffix s: suffixes){
-            s.previousCount =0;
-            s.currentCount = s.initialCount;
+    public static void setCountToZero(HashMap<String,Suffix> suffixes){
+        for (Map.Entry<String,Suffix> s: suffixes.entrySet()){
+            s.getValue().previousCount =0;
+            s.getValue().currentCount = s.getValue().initialCount;
         }
     }
 
@@ -105,22 +104,19 @@ public class PlayIce {
         /*Copy list of suffixs into current list*/
 
         // currentSuffixes = initialListOfSuffixes;
-        for(Suffix s : currentSuffixes){
+        for(Map.Entry<String,Suffix> suffix : currentSuffixes.entrySet()){
+            Suffix s = suffix.getValue();
             s.previousCount = s.currentCount;
             s.currentCount = 0;
         }
         
-        for(Suffix s : currentSuffixes){
-            for (String child: s.possibleChildren){
-                for(Suffix next: currentSuffixes) {
-                    if(next.suffixString.equals(child)) {
-                        next.currentCount += s.previousCount;
-                    }
-                }
+        for(Map.Entry<String,Suffix> suffix : currentSuffixes.entrySet()){
+            for (String child: suffix.getValue().possibleChildren){
+                Suffix next = currentSuffixes.get(child);
+                next.currentCount += suffix.getValue().previousCount;
             }
         }
-
-           }
+    }
 
     /**
      * Creates the list of valid substrings that can be created from a given suffix.
@@ -128,10 +124,11 @@ public class PlayIce {
      * @param suffixes - list of suffixes to find substrings from.
      * @author Alexis Barltrop
      */
-    private void findChildren(ArrayList<Suffix> suffixes){
+    private void findChildren(HashMap<String,Suffix> suffixes){
         int ruleLength = maxRuleLength(rules);
         
-        for (Suffix s: suffixes){
+        for (Map.Entry<String, Suffix> suffix: suffixes.entrySet()){
+            Suffix s = suffix.getValue();
             /*Add each one of the letters from the alphabet to the end of the suffix*/
             for (int i = 0; i < alphabet.length(); i++) {
                 String nextString = s.suffixString + alphabet.get(i);
@@ -157,7 +154,7 @@ public class PlayIce {
                 }
                 
             }
-            System.err.println(s.possibleChildren);
+            //System.err.println(s.possibleChildren);
         }
     }
     
@@ -166,10 +163,10 @@ public class PlayIce {
      * @param suffixes - list of suffixes to sum.
      * @return the sum of all the counts in the suffixes.
      */
-    private long total(ArrayList<Suffix> suffixes){
+    private long total(HashMap<String,Suffix> suffixes){
         long total = 0;
-        for (Suffix s : suffixes){
-            total += (s.currentCount);
+        for (Map.Entry<String,Suffix> s : suffixes.entrySet()){
+            total += (s.getValue().currentCount);
         }
         return total;
     }
@@ -196,10 +193,10 @@ public class PlayIce {
             
             if(valid) {
                 s = new Suffix(curr, 0, 1);
-                currentSuffixes.add(s);
+                currentSuffixes.put(curr,s);
             } else {
                 s = new Suffix(curr, 0, 0);
-                currentSuffixes.add(s);
+                currentSuffixes.put(curr,s);
             }
             
             return;
