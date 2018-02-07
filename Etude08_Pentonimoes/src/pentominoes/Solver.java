@@ -104,5 +104,12 @@ public class Solver {
         pent.add(new Coordinate(1, 1));
         pent.add(new Coordinate(2, 1));
         P.add(new Pentomino(Encoding.P, pent));
+
+        pentominoes.put(Encoding.P, P);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(pentominoes.get(Encoding.O).get(0));
+        System.out.println(pentominoes.get(Encoding.P).get(0));
     }
 }
