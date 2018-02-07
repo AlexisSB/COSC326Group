@@ -62,7 +62,9 @@ public class PlayIce {
             } else {
                 if(initialListOfSuffixes.isEmpty()){
                     createInitialList(totalLength - 1);
+                    System.err.println("Done initial list");
                     findChildren(initialListOfSuffixes);
+                    System.err.println("Done children");
                 }
                 
                 /*Figure out how many more steps are needed to get to the target length.*/
@@ -73,6 +75,7 @@ public class PlayIce {
                 }
                 
                 /*Print Answer*/
+                System.out.println( "Brute Force: " + count(targetLength));
                 System.out.println(total(currentSuffixes));
 
                 /*Clean up*/
@@ -91,17 +94,34 @@ public class PlayIce {
      */
     private void step() {        
         /*Copy list of suffixs into current list*/
-        if (currentSuffixes.isEmpty()) {            
-            previousSuffixes = initialListOfSuffixes;
-            
-            for(Suffix s : previousSuffixes) {
-                Suffix copy = new Suffix(s.suffixString, s.branchingOptions, s.count);
-                copy.addChildren(s.possibleChildren);
-                currentSuffixes.add(copy);
+
+        currentSuffixes = initialListOfSuffixes;
+        for(Suffix s : currentSuffixes){
+            s.previousCount = s.currentCount;
+            s.currentCount = 0;
+            for (String child: s.possibleChildren){
+                for(Suffix next: currentSuffixes) {
+                    if(next.suffixString.equals(child)) {
+                        next.currentCount += s.previousCount;
+                    }
+                }
             }
+        }
+
+        /*
+             if (currentSuffixes.isEmpty()) {            
             
+            for(Suffix s : initialListOfSuffixes) {
+                Suffix copy1 = new Suffix(s.suffixString, s.branchingOptions, s.count);
+                Suffix copy2 = new Suffix(s.suffixString, s.branchingOptions, s.count);
+                copy1.addChildren(s.possibleChildren);
+                copy2.addChildren(s.possibleChildren);
+                previousSuffixes.add(copy1);
+                currentSuffixes.add(copy2);
+            }
+            System.err.println("First Step Done");          
         } else {
-            /*make a copy of currentSuffixes and set to previous.*/
+            
             previousSuffixes.clear();
             for(Suffix s : currentSuffixes){
                 Suffix copy = new Suffix(s.suffixString, s.branchingOptions, s.count);
@@ -110,13 +130,11 @@ public class PlayIce {
             }
         }
 
-        /*Reset count for current lsit of suffixes*/
+       
         for(Suffix current : currentSuffixes) {
             current.count = 0;
         }
 
-        /* Add the count of each suffix in the previous array
-         * to the count of its children in the current suffix list*/
         for(Suffix previous: previousSuffixes ) {
             for(String child: previous.possibleChildren) {
                 for(Suffix next: currentSuffixes) {
@@ -126,6 +144,7 @@ public class PlayIce {
                 }
             }
         }
+        */
     }
 
     /**
@@ -159,14 +178,11 @@ public class PlayIce {
                 }
                 
                 if (!rejectChild){
-                    for(Suffix searchSuffix : suffixes){
-                        if (searchSuffix.suffixString.equals(nextString.substring(1))){
-                            s.addChild(searchSuffix.suffixString);
-                        }
-                    }
+                    s.addChild(nextString.substring(1));
                 }
                 
             }
+            System.err.println(s.possibleChildren);
         }
     }
     
@@ -178,7 +194,7 @@ public class PlayIce {
     private long total(ArrayList<Suffix> suffixes){
         long total = 0;
         for (Suffix s : suffixes){
-            total += (s.count);
+            total += (s.currentCount);
         }
         return total;
     }

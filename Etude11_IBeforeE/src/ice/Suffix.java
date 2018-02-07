@@ -5,18 +5,19 @@ public class Suffix{
 
     String suffixString;
     int branchingOptions;
-    long count;
+    long currentCount;
+    long previousCount;
     HashSet<String> possibleChildren = new HashSet<String>();
 
     public Suffix(String suffixString, int branches, long count){
         this.suffixString = suffixString;
         this.branchingOptions = branches;
-        this.count = count;
+        this.currentCount = count;
     }
 
     public String toString(){
         
-        return this.suffixString  +" "+ count + " "+ possibleChildren;
+        return this.suffixString  +" "+ currentCount + " "+ possibleChildren;
     }
 
     public void addChild(String child){
