@@ -13,9 +13,9 @@ import java.util.regex.*;
  * @author Anthony Dickson
  */
 public class Rule {
-    private final String prohibited;
-    private final List<String> exceptions = new ArrayList<>();
-    private final Pattern pattern;
+    final String prohibited;
+    final List<String> exceptions = new ArrayList<>();
+    final Pattern pattern;
 
     /**
      * <p>Construct a rule from a string that contains the prohibited character
@@ -90,6 +90,41 @@ public class Rule {
         return true;
     }
 
+    /**
+     * Get the length of the prohibited string of this rule.
+     *
+     * @return The length of the prohibited string.
+     */ 
+    public int lengthOfRule() {
+        return prohibited.length();
+    }
+
+    /**
+     * Get the length of the rule and the longest exception.
+     *
+     * @return the length of the rule and the longest exception.
+     */
+    public int totalLengthOfRule() {
+        return prohibited.length() + maxExceptionLength();
+    }
+
+    /**
+     * Get the length of the longest exception.
+     *
+     * @return the length of the longest exception.
+     */
+    public int maxExceptionLength() {
+        int maxExceptionLength = 0;
+        
+        for (String exception : exceptions) {
+            if(exception.length() > maxExceptionLength) {
+                maxExceptionLength = exception.length();
+            }
+        }
+        
+        return maxExceptionLength;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -114,28 +149,5 @@ public class Rule {
 
         return sb.toString();
     }
-
-    public int totalLengthOfRule(){
-        int length = maxExceptionLength() + lengthOfRule();
-        
-        //System.err.println("Rule length: " + (l+maxExceptionLength));
-        return length;
-    }
-
-    public int maxExceptionLength(){
-        int maxExceptionLength = -1;
-        
-        for (String s : exceptions){
-            if(s.length() > maxExceptionLength){
-                maxExceptionLength = s.length();
-            }
-        }
-        return maxExceptionLength;
-    }
-    
-    public int lengthOfRule(){
-        return prohibited.length();
-    }
-
 }
 

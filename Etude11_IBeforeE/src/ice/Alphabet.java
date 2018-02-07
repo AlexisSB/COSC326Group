@@ -28,6 +28,25 @@ public class Alphabet {
         return str.matches("[" + validChars + "]*");
     }
 
+    /**
+     * Get the length of the alphabet.
+     *
+     * @return the length of the alphabet.
+     */
+    public int length() {
+        return validChars.length();
+    }
+
+    /**
+     * Get the character at position <code>i</code> in the alphabet.
+     *
+     * @param i the index of the character in the alphabet to get.
+     * @return the character at position <code>i</code> in the alphabet.
+     */
+    public String get(int i) {
+        return validChars.substring(i, i + 1);
+    }
+
     @Override
     public String toString() {
         return validChars;
