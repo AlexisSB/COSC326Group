@@ -1,9 +1,9 @@
 import java.util.*;
 
 /**
- * ColourOfTheDay
+ * ColourOfTheDay2
  */
-public class ColourOfTheDay {
+public class ColourOfTheDay2 {
     static enum Colour { NONE, RED, GREEN, BLUE, GOLD }
     static final int daysInYear = 350;
 
@@ -55,7 +55,7 @@ public class ColourOfTheDay {
 
 	private static Map<Colour, Integer> getCounts(long n) {
         Map<Colour, Integer> counts = new HashMap<>();
-
+        
 		for (Colour c : Colour.values()) {
             counts.put(c, 0);
         }        
