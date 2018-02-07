@@ -5,6 +5,7 @@ public class Suffix{
 
     String suffixString;
     int branchingOptions;
+    long initialCount;
     long currentCount;
     long previousCount;
     HashSet<String> possibleChildren = new HashSet<String>();
@@ -12,6 +13,7 @@ public class Suffix{
     public Suffix(String suffixString, int branches, long count){
         this.suffixString = suffixString;
         this.branchingOptions = branches;
+        this.initialCount = count;
         this.currentCount = count;
     }
 

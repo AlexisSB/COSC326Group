@@ -20,8 +20,8 @@ public class PlayIce {
     static List<Rule> rules = new ArrayList<>();
     static Alphabet alphabet;
     /*Suffix list variables for the dynamic calculation methods */
-    ArrayList<Suffix> initialListOfSuffixes = new ArrayList<Suffix>();
-    ArrayList<Suffix> previousSuffixes = new ArrayList<Suffix>();
+    //ArrayList<Suffix> initialListOfSuffixes = new ArrayList<Suffix>();
+    //ArrayList<Suffix> previousSuffixes = new ArrayList<Suffix>();
     ArrayList<Suffix> currentSuffixes = new ArrayList<Suffix>();
 
     public PlayIce(Validator validator, List<Instance> instances) {
@@ -60,11 +60,13 @@ public class PlayIce {
             } else if(targetLength <= totalLength - 1) {
                 System.out.println(count(targetLength));
             } else {
-                if(initialListOfSuffixes.isEmpty()){
+                if(currentSuffixes.isEmpty()){
                     createInitialList(totalLength - 1);
                     System.err.println("Done initial list");
-                    findChildren(initialListOfSuffixes);
+                    findChildren(currentSuffixes);
                     System.err.println("Done children");
+                }else{
+                    setCountToZero(currentSuffixes);
                 }
                 
                 /*Figure out how many more steps are needed to get to the target length.*/
@@ -79,11 +81,18 @@ public class PlayIce {
                 System.out.println(total(currentSuffixes));
 
                 /*Clean up*/
-                previousSuffixes.clear();
-                currentSuffixes.clear();   
+                //previousSuffixes.clear();
+                //currentSuffixes.clear();   
                 
             }
             
+        }
+    }
+
+    public static void setCountToZero(ArrayList<Suffix> suffixes){
+        for (Suffix s: suffixes){
+            s.previousCount =0;
+            s.currentCount = s.initialCount;
         }
     }
 
@@ -95,10 +104,13 @@ public class PlayIce {
     private void step() {        
         /*Copy list of suffixs into current list*/
 
-        currentSuffixes = initialListOfSuffixes;
+        // currentSuffixes = initialListOfSuffixes;
         for(Suffix s : currentSuffixes){
             s.previousCount = s.currentCount;
             s.currentCount = 0;
+        }
+        
+        for(Suffix s : currentSuffixes){
             for (String child: s.possibleChildren){
                 for(Suffix next: currentSuffixes) {
                     if(next.suffixString.equals(child)) {
@@ -108,44 +120,7 @@ public class PlayIce {
             }
         }
 
-        /*
-             if (currentSuffixes.isEmpty()) {            
-            
-            for(Suffix s : initialListOfSuffixes) {
-                Suffix copy1 = new Suffix(s.suffixString, s.branchingOptions, s.count);
-                Suffix copy2 = new Suffix(s.suffixString, s.branchingOptions, s.count);
-                copy1.addChildren(s.possibleChildren);
-                copy2.addChildren(s.possibleChildren);
-                previousSuffixes.add(copy1);
-                currentSuffixes.add(copy2);
-            }
-            System.err.println("First Step Done");          
-        } else {
-            
-            previousSuffixes.clear();
-            for(Suffix s : currentSuffixes){
-                Suffix copy = new Suffix(s.suffixString, s.branchingOptions, s.count);
-                copy.addChildren(s.possibleChildren);
-                previousSuffixes.add(copy);
-            }
-        }
-
-       
-        for(Suffix current : currentSuffixes) {
-            current.count = 0;
-        }
-
-        for(Suffix previous: previousSuffixes ) {
-            for(String child: previous.possibleChildren) {
-                for(Suffix next: currentSuffixes) {
-                    if(next.suffixString.equals(child)) {
-                        next.count += previous.count;
-                    }
-                }
-            }
-        }
-        */
-    }
+           }
 
     /**
      * Creates the list of valid substrings that can be created from a given suffix.
@@ -221,10 +196,10 @@ public class PlayIce {
             
             if(valid) {
                 s = new Suffix(curr, 0, 1);
-                initialListOfSuffixes.add(s);
+                currentSuffixes.add(s);
             } else {
                 s = new Suffix(curr, 0, 0);
-                initialListOfSuffixes.add(s);
+                currentSuffixes.add(s);
             }
             
             return;
