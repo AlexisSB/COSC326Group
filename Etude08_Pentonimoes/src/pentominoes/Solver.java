@@ -370,10 +370,43 @@ public class Solver {
                                     new Coordinate(2, 2)));
 
         PENTOMINOES.put(Type.V, V);
+
+        // Pentomino W
+        List<Pentomino> W = new ArrayList<>();
+
+        // W, Identity
+        W.add(new Pentomino(Type.W, new Coordinate(0, 0),
+                                    new Coordinate(0, 1),
+                                    new Coordinate(1, 1),
+                                    new Coordinate(1, 2),
+                                    new Coordinate(2, 2)));
+
+        // W, Rotated 90 degrees
+        W.add(new Pentomino(Type.W, new Coordinate(1, 0),
+                                    new Coordinate(2, 0),
+                                    new Coordinate(0, 1),
+                                    new Coordinate(1, 1),
+                                    new Coordinate(0, 2)));
+
+        // W, Rotated 180 degrees
+        W.add(new Pentomino(Type.W, new Coordinate(0, 0),
+                                    new Coordinate(1, 0),
+                                    new Coordinate(1, 1),
+                                    new Coordinate(2, 1),
+                                    new Coordinate(2, 2)));
+
+        // W, Rotated 270 degrees
+        W.add(new Pentomino(Type.W, new Coordinate(2, 0),
+                                    new Coordinate(1, 1),
+                                    new Coordinate(2, 1),
+                                    new Coordinate(0, 2),
+                                    new Coordinate(1, 2)));
+
+        PENTOMINOES.put(Type.W, W);
     }
                                     
     public static void main(String[] args) {
-        for (Pentomino p : PENTOMINOES.get(Type.V)) {
+        for (Pentomino p : PENTOMINOES.get(Type.W)) {
             System.out.println(p);
         }
     }
