@@ -9,107 +9,92 @@ public class Solver {
 
         // Pentomino O
         List<Pentomino> O = new ArrayList<>();
+
         // O, Identity
-        List<Coordinate> pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(0, 2));
-        pent.add(new Coordinate(0, 3));
-        pent.add(new Coordinate(0, 4));
-        O.add(new Pentomino(Encoding.O, pent));
+        O.add(new Pentomino(Encoding.O, new Coordinate(0, 0), 
+                                        new Coordinate(0, 1), 
+                                        new Coordinate(0, 2), 
+                                        new Coordinate(0, 3), 
+                                        new Coordinate(0, 4)));
 
         //O, Rotated 90 degrees
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(2, 0));
-        pent.add(new Coordinate(3, 0));
-        pent.add(new Coordinate(4, 0));
-        O.add(new Pentomino(Encoding.O, pent));
+        O.add(new Pentomino(Encoding.O, new Coordinate(0, 0), 
+                                        new Coordinate(1, 0), 
+                                        new Coordinate(2, 0), 
+                                        new Coordinate(3, 0), 
+                                        new Coordinate(4, 0)));
 
         pentominoes.put(Encoding.O, O);
 
         // Pentomino P
         List<Pentomino> P = new ArrayList<>();
+
         // P, Identity
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(1, 1));
-        pent.add(new Coordinate(0, 2));
-        P.add(new Pentomino(Encoding.P, pent));
+        P.add(new Pentomino(Encoding.P, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(0, 2)));
 
         // P, Rotated 90 degrees
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(2, 0));
-        pent.add(new Coordinate(1, 1));
-        pent.add(new Coordinate(2, 1));
-        P.add(new Pentomino(Encoding.P, pent));
+        P.add(new Pentomino(Encoding.P, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(2, 0),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(2, 1)));
         
         // P, Rotated 180 degrees
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(1, 1));
-        pent.add(new Coordinate(0, 2));
-        pent.add(new Coordinate(1, 2));
-        P.add(new Pentomino(Encoding.P, pent));
+        P.add(new Pentomino(Encoding.P, new Coordinate(1, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(0, 2),
+                                        new Coordinate(1, 2)));
 
-         
         // P, Rotated 270 degrees
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(1, 1));
-        pent.add(new Coordinate(2, 1));
-        P.add(new Pentomino(Encoding.P, pent));
+        P.add(new Pentomino(Encoding.P, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(2, 1)));
 
         // P, Identity, Flipped
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(1, 1));
-        pent.add(new Coordinate(1, 2));
-        P.add(new Pentomino(Encoding.P, pent));
+        P.add(new Pentomino(Encoding.P, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(1, 2)));
 
         // P, Rotated 90 degrees, Flipped
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(2, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(1, 1));
-        P.add(new Pentomino(Encoding.P, pent));
-        
+        P.add(new Pentomino(Encoding.P, new Coordinate(1, 0),
+                                        new Coordinate(2, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(2, 1)));
+                                        
         // P, Rotated 180 degrees, Flipped
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(0, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(1, 1));
-        pent.add(new Coordinate(0, 2));
-        pent.add(new Coordinate(1, 2));
-        P.add(new Pentomino(Encoding.P, pent));
-
-         
+        P.add(new Pentomino(Encoding.P, new Coordinate(0, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(0, 2),
+                                        new Coordinate(1, 2)));
+        
         // P, Rotated 270 degrees, Flipped
-        pent = new ArrayList<>();
-        pent.add(new Coordinate(1, 0));
-        pent.add(new Coordinate(2, 0));
-        pent.add(new Coordinate(0, 1));
-        pent.add(new Coordinate(1, 1));
-        pent.add(new Coordinate(2, 1));
-        P.add(new Pentomino(Encoding.P, pent));
-
+        P.add(new Pentomino(Encoding.P, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(2, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1)));
+        
         pentominoes.put(Encoding.P, P);
     }
-
+                                    
     public static void main(String[] args) {
-        System.out.println(pentominoes.get(Encoding.O).get(0));
-        System.out.println(pentominoes.get(Encoding.P).get(0));
+        for (Pentomino p : pentominoes.get(Encoding.O)) {
+            System.out.println(p);
+        }
+
+        for (Pentomino p : pentominoes.get(Encoding.P)) {
+            System.out.println(p);
+        }
     }
 }

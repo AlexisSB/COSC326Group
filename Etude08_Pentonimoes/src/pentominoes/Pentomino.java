@@ -1,5 +1,6 @@
 package pentominoes;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,6 +16,10 @@ public class Pentomino {
     public Pentomino(Encoding type, List<Coordinate> coordinates) {
         this.type = type;
         this.coordinates = coordinates;
+    }
+
+    public Pentomino(Encoding type, Coordinate...coordinates) {
+        this(type, Arrays.asList(coordinates));
     }
 
     @Override
