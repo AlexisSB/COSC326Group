@@ -208,10 +208,71 @@ public class Solver {
                                         new Coordinate(1, 2)));
 
         PENTOMINOES.put(Encoding.R, R);
+
+        // Pentomino S
+        List<Pentomino> S = new ArrayList<>();
+
+        // S, Identity
+        S.add(new Pentomino(Encoding.S, new Coordinate(2, 0),
+                                        new Coordinate(3, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(2, 1)));
+
+        // S, Rotated 90 Degrees
+        S.add(new Pentomino(Encoding.S, new Coordinate(0, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(0, 2),
+                                        new Coordinate(1, 2),
+                                        new Coordinate(1, 3)));
+
+        // S, Rotated 180 Degrees
+        S.add(new Pentomino(Encoding.S, new Coordinate(1, 0),
+                                        new Coordinate(2, 0),
+                                        new Coordinate(3, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1)));
+
+        // S, Rotated 270 Degrees
+        S.add(new Pentomino(Encoding.S, new Coordinate(0, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(1, 2),
+                                        new Coordinate(1, 3)));
+
+        // S, Flipped, Identity
+        S.add(new Pentomino(Encoding.S, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(2, 1),
+                                        new Coordinate(3, 1)));
+
+        // S, Flipped, Rotated 90 degrees
+        S.add(new Pentomino(Encoding.S, new Coordinate(1, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(0, 2),
+                                        new Coordinate(0, 3)));
+
+        // S, Flipped, Rotated 180 degrees
+        S.add(new Pentomino(Encoding.S, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(2, 0),
+                                        new Coordinate(2, 1),
+                                        new Coordinate(3, 1)));
+
+        // S, Flipped, Rotated 270 degrees
+        S.add(new Pentomino(Encoding.S, new Coordinate(1, 0),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(0, 2),
+                                        new Coordinate(1, 2),
+                                        new Coordinate(0, 3)));
+
+        PENTOMINOES.put(Encoding.S, S);
     }
                                     
     public static void main(String[] args) {
-        for (Pentomino p : PENTOMINOES.get(Encoding.R)) {
+        for (Pentomino p : PENTOMINOES.get(Encoding.S)) {
             System.out.println(p);
         }
     }
