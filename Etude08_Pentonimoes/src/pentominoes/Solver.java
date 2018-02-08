@@ -269,10 +269,43 @@ public class Solver {
                                         new Coordinate(0, 3)));
 
         PENTOMINOES.put(Encoding.S, S);
+
+        // Pentomino T
+        List<Pentomino> T = new ArrayList<>();
+
+        // T, Identity
+        T.add(new Pentomino(Encoding.T, new Coordinate(0, 0),
+                                        new Coordinate(1, 0),
+                                        new Coordinate(2, 0),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(1, 2)));
+
+        // T, Rotated 90 degrees
+        T.add(new Pentomino(Encoding.T, new Coordinate(2, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(2, 1),
+                                        new Coordinate(2, 2)));
+
+        // T, Rotated 180 degrees
+        T.add(new Pentomino(Encoding.T, new Coordinate(1, 0),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(0, 2),
+                                        new Coordinate(1, 2),
+                                        new Coordinate(2, 2)));
+
+        // T, Rotated 270 degrees
+        T.add(new Pentomino(Encoding.T, new Coordinate(0, 0),
+                                        new Coordinate(0, 1),
+                                        new Coordinate(1, 1),
+                                        new Coordinate(2, 1),
+                                        new Coordinate(0, 2)));
+
+        PENTOMINOES.put(Encoding.T, T);
     }
                                     
     public static void main(String[] args) {
-        for (Pentomino p : PENTOMINOES.get(Encoding.S)) {
+        for (Pentomino p : PENTOMINOES.get(Encoding.T)) {
             System.out.println(p);
         }
     }
