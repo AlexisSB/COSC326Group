@@ -5,7 +5,7 @@ package pentominoes;
  * for pentaminoes according to Conways's representation. Refer to wikipedia
  * https://en.wikipedia.org/wiki/Pentomino for more information.
  */
-public enum Encoding {
+public enum Type {
     O,
     P,
     Q,

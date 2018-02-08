@@ -10,15 +10,15 @@ import java.util.List;
  */
 
 public class Pentomino {
-    final Encoding type;
+    final Type type;
     final List<Coordinate> coordinates;
 
-    public Pentomino(Encoding type, List<Coordinate> coordinates) {
+    public Pentomino(Type type, List<Coordinate> coordinates) {
         this.type = type;
         this.coordinates = coordinates;
     }
 
-    public Pentomino(Encoding type, Coordinate...coordinates) {
+    public Pentomino(Type type, Coordinate... coordinates) {
         this(type, Arrays.asList(coordinates));
     }
 
