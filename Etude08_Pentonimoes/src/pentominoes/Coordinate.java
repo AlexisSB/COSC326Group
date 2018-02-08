@@ -3,12 +3,9 @@ package pentominoes;
 import java.awt.Point;
 
 /**
- *  Captures the coordinate on the board in the form of
- *  (x,y) considering origin as top-left corner, and going right as positive x-direction,
- *  and going down as positive y-direction.
- *
+ *  A point representing a location in (x, y) coordinate space.
  */
-public class Coordinate extends Point{
+public class Coordinate extends Point {
     public Coordinate(int x, int y) {
         super(x, y);
     }
