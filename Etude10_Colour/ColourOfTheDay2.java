@@ -6,15 +6,15 @@ import java.util.*;
 public class ColourOfTheDay2 {
     static enum Colour { NONE, RED, GREEN, BLUE, GOLD }
     static final int daysInYear = 350;
-    static Map<Long, Colour> colourOfDay = new HashMap<>(); 
-    static Set<Long> primes = new HashSet<>();
-    static { primes.add(2L); } 
+    static Map<Integer, Colour> colourOfDay = new HashMap<>(); 
+    static Set<Integer> primes = new HashSet<>();
+    static { primes.add(2); } 
 
-    static public boolean isPrime(long n) {
+    static public boolean isPrime(int n) {
         if (primes.contains(n)) return true;
         if (n % 2 == 0) return false;
 
-        for (long i = 3; i * i <= n; i += 2) {
+        for (int i = 3; i * i <= n; i += 2) {
             if(n % i == 0) return false;
         }
 
@@ -22,7 +22,7 @@ public class ColourOfTheDay2 {
         return true;
     }
 
-    static Colour colour(long day) {
+    static Colour colour(int day) {
         Colour c = Colour.NONE;
 
         if (colourOfDay.containsKey(day)) return colourOfDay.get(day);
@@ -30,7 +30,7 @@ public class ColourOfTheDay2 {
         if (day == 1) c = Colour.NONE;
         else if (day == 7) c = Colour.GOLD;
         else if (isPrime(day)) {
-            long dayOfWeek = day % 7;
+            int dayOfWeek = day % 7;
             if (dayOfWeek == 1 || dayOfWeek == 4) c = Colour.RED;
             else if (dayOfWeek == 2 || dayOfWeek == 5) c = Colour.GREEN;
             else if (dayOfWeek == 3 || dayOfWeek == 6) c = Colour.BLUE;
@@ -54,7 +54,8 @@ public class ColourOfTheDay2 {
                 if (red > blue) c = Colour.RED;
                 else c = Colour.BLUE;
             } else {
-                c = Colour.GREEN;
+                if (green > blue) c = Colour.GREEN;
+                else c = Colour.BLUE;
             }
         }
 
@@ -62,16 +63,16 @@ public class ColourOfTheDay2 {
         return c;
     }
 
-	private static Map<Colour, Integer> getCounts(long n) {
+	private static Map<Colour, Integer> getCounts(int n) {
         Map<Colour, Integer> counts = new HashMap<>();
 
 		for (Colour c : Colour.values()) {
             counts.put(c, 0);
         }     
 
-        long upper = (long) Math.sqrt(n);
+        int upper = (int) Math.sqrt(n);
 
-        for (long i = 2; i <= upper; i++) {
+        for (int i = 2; i <= upper; i++) {
             if (n % i == 0) {
                 Colour c = colour(n - i);
                 counts.put(c, counts.get(c) + 1);
@@ -85,22 +86,22 @@ public class ColourOfTheDay2 {
 	}
 
     public static void main(String[] args) {
-        question1(10000000);
+        question1(Integer.MAX_VALUE);
         question2();
         question3();
     }
 
 	private static void printSample() {
-		for (long n = 2; n <= 1000; n++) {
+		for (int n = 2; n <= 1000; n++) {
             System.out.println(n + " " + colour(n));
         }
 	}
 
 	private static void question3() {
-		long numHolidays = 0;
-        long start = 10000000 * daysInYear;
+		int numHolidays = 0;
+        int start = 10000000 * daysInYear;
 
-        for (long i = 1; i <= daysInYear; i++) {
+        for (int i = 1; i <= daysInYear; i++) {
             if (colour(start + i) == Colour.GOLD) numHolidays++; 
         }
 
@@ -108,22 +109,22 @@ public class ColourOfTheDay2 {
 	}
 
 	private static void question2() {
-		long numHolidays = 0;
-        long start = 1000 * daysInYear;
+		int numHolidays = 0;
+        int start = 1000 * daysInYear;
 
-        for (long i = 1; i <= daysInYear; i++) {
+        for (int i = 1; i <= daysInYear; i++) {
             if (colour(start + i) == Colour.GOLD) numHolidays++; 
         }
 
         System.out.println(numHolidays + " HOLIDAYS IN YEAR 1,000");
 	}
 
-	private static void question1(long n) {
+	private static void question1(int n) {
 		Colour d1 = colour(1);
         Colour d2 = colour(2);
         Colour d3 = colour(3);
 
-        for (long i = 3; i <= n; i++) {
+        for (int i = 3; i <= n; i++) {
             d1 = d2;
             d2 = d3;
             d3 = colour(i);

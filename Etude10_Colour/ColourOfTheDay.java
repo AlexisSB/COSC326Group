@@ -54,7 +54,8 @@ public class ColourOfTheDay {
                 if (red > blue) c = Colour.RED;
                 else c = Colour.BLUE;
             } else {
-                c = Colour.GREEN;
+                if (green > blue) c = Colour.GREEN;
+                else c = Colour.BLUE;
             }
         }
 
