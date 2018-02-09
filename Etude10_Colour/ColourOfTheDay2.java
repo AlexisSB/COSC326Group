@@ -86,7 +86,7 @@ public class ColourOfTheDay2 {
 	}
 
     public static void main(String[] args) {
-        question1(Integer.MAX_VALUE);
+        question1(25000000);
         question2();
         question3();
     }
@@ -137,6 +137,6 @@ public class ColourOfTheDay2 {
             }
         }
 
-        System.out.println("\nNO THREE HOLIDAY IN FIRST " + n + " YEARS");
+        System.out.println("\nNO THREE HOLIDAY IN FIRST " + n + " DAYS");
 	}    
 }
