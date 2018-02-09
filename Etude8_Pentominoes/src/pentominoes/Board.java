@@ -22,7 +22,7 @@ public class Board {
         
         for (int i = 0; i < puzzle.length; i++) {
             for (int j = 0; j < puzzle[i].length(); j++) {
-                values[i][j] = (puzzle[i].charAt(j) == '*') ? EMPTY : INVALID;
+                values[i][j] = (puzzle[i].charAt(j) == '.') ? EMPTY : INVALID;
             }
         }
     }
@@ -97,6 +97,17 @@ public class Board {
         for (Coordinate c : p.coordinates) {
             if (!set(row + c.y, col + c.x, p.type)) {
                 remove(row, col, p);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    public boolean canPlace(int row, int col, Pentomino p) {
+        for (Coordinate c : p.coordinates) {
+            if (get(row + c.y, col + c.x) != EMPTY) {
                 return false;
             }
         }
