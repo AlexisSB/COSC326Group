@@ -26,7 +26,12 @@ public enum Type {
         List<Pentomino> O = new ArrayList<>();
 
         // O, Identity
-           
+        /* #
+         * #
+         * #
+         * #
+         * #
+         */
         O.add(new Pentomino(Type.O, new Coordinate(0, 0), 
                                     new Coordinate(0, 1), 
                                     new Coordinate(0, 2), 
@@ -34,6 +39,8 @@ public enum Type {
                                     new Coordinate(0, 4)));
 
         //O, Rotated 90 degrees
+        /* # # # # #
+         */
         O.add(new Pentomino(Type.O, new Coordinate(0, 0), 
                                     new Coordinate(1, 0), 
                                     new Coordinate(2, 0), 
@@ -46,6 +53,7 @@ public enum Type {
         List<Pentomino> P = new ArrayList<>();
 
         // P, Identity
+        
         P.add(new Pentomino(Type.P, new Coordinate(0, 0),
                                     new Coordinate(1, 0),
                                     new Coordinate(0, 1),
@@ -398,10 +406,10 @@ public enum Type {
                                     new Coordinate(2, 2)));
 
         // W, Rotated 90 degrees
-        W.add(new Pentomino(Type.W, new Coordinate(1, 0),
-                                    new Coordinate(2, 0),
-                                    new Coordinate(0, 1),
+        W.add(new Pentomino(Type.W, new Coordinate(2, 0),
+                                    new Coordinate(1, 0),
                                     new Coordinate(1, 1),
+                                    new Coordinate(0, 1),
                                     new Coordinate(0, 2)));
 
         // W, Rotated 180 degrees
@@ -413,10 +421,10 @@ public enum Type {
 
         // W, Rotated 270 degrees
         W.add(new Pentomino(Type.W, new Coordinate(2, 0),
+                                    new Coordinate(1, 2),
                                     new Coordinate(1, 1),
                                     new Coordinate(2, 1),
-                                    new Coordinate(0, 2),
-                                    new Coordinate(2, 2)));
+                                    new Coordinate(0, 2)));
 
         PENTOMINOES.put(Type.W, W);
 
