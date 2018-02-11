@@ -211,8 +211,8 @@ public enum Type {
                                     new Coordinate(1, 2)));
 
         // R, Flipped, Rotated 90 degrees
-        R.add(new Pentomino(Type.R, new Coordinate(0, 0),
-                                    new Coordinate(1, 0),
+        R.add(new Pentomino(Type.R, new Coordinate(2, 0),
+                                    new Coordinate(0, 1),
                                     new Coordinate(1, 1),
                                     new Coordinate(2, 1),
                                     new Coordinate(1, 2)));
@@ -225,11 +225,11 @@ public enum Type {
                                     new Coordinate(2, 2)));
 
         // R, Flipped, Rotated 270 degrees
-        R.add(new Pentomino(Type.R, new Coordinate(0, 0),
-                                    new Coordinate(0, 1),
-                                    new Coordinate(1, 1),
+        R.add(new Pentomino(Type.R, new Coordinate(1, 0),
                                     new Coordinate(2, 1),
-                                    new Coordinate(1, 2)));
+                                    new Coordinate(1, 1),
+                                    new Coordinate(0, 1),
+                                    new Coordinate(0, 2)));
 
         PENTOMINOES.put(Type.R, R);
 
