@@ -5,16 +5,16 @@ import java.util.*;
  */
 public class ColourOfTheDay2 {
     static enum Colour { NONE, RED, GREEN, BLUE, GOLD }
-    static final int daysInYear = 350;
-    static Map<Integer, Colour> colourOfDay = new HashMap<>(); 
-    static Set<Integer> primes = new HashSet<>();
-    static { primes.add(2); } 
+    static final long daysInYear = 350L;
+    static Map<Long, Colour> colourOfDay = new HashMap<>(); 
+    static Set<Long> primes = new HashSet<>();
+    static { primes.add(2L); } 
 
-    static public boolean isPrime(int n) {
+    static public boolean isPrime(long n) {
         if (primes.contains(n)) return true;
         if (n % 2 == 0) return false;
 
-        for (int i = 3; i * i <= n; i += 2) {
+        for (long i = 3; i * i <= n; i += 2) {
             if(n % i == 0) return false;
         }
 
@@ -22,7 +22,7 @@ public class ColourOfTheDay2 {
         return true;
     }
 
-    static Colour colour(int day) {
+    static Colour colour(long day) {
         Colour c = Colour.NONE;
 
         if (colourOfDay.containsKey(day)) return colourOfDay.get(day);
@@ -30,7 +30,7 @@ public class ColourOfTheDay2 {
         if (day == 1) c = Colour.NONE;
         else if (day == 7) c = Colour.GOLD;
         else if (isPrime(day)) {
-            int dayOfWeek = day % 7;
+            long dayOfWeek = day % 7;
             if (dayOfWeek == 1 || dayOfWeek == 4) c = Colour.RED;
             else if (dayOfWeek == 2 || dayOfWeek == 5) c = Colour.GREEN;
             else if (dayOfWeek == 3 || dayOfWeek == 6) c = Colour.BLUE;
@@ -63,7 +63,7 @@ public class ColourOfTheDay2 {
         return c;
     }
 
-	private static Map<Colour, Integer> getCounts(int n) {
+	private static Map<Colour, Integer> getCounts(long n) {
         Map<Colour, Integer> counts = new HashMap<>();
 
 		for (Colour c : Colour.values()) {
@@ -71,7 +71,8 @@ public class ColourOfTheDay2 {
         }     
 
         int upper = (int) Math.sqrt(n);
-
+        
+        // Count the colours of the previous days of the same factor.
         for (int i = 2; i <= upper; i++) {
             if (n % i == 0) {
                 Colour c = colour(n - i);
@@ -86,9 +87,9 @@ public class ColourOfTheDay2 {
 	}
 
     public static void main(String[] args) {
-        question1(25000000);
+        question1(1000000);
         question2();
-        question3();
+        // question3(); // Produces stack overflow error.
     }
 
 	private static void printSample() {
@@ -96,31 +97,9 @@ public class ColourOfTheDay2 {
             System.out.println(n + " " + colour(n));
         }
 	}
-
-	private static void question3() {
-		int numHolidays = 0;
-        int start = 10000000 * daysInYear;
-
-        for (int i = 1; i <= daysInYear; i++) {
-            if (colour(start + i) == Colour.GOLD) numHolidays++; 
-        }
-
-        System.out.println(numHolidays + " HOLIDAYS IN YEAR 10,000,000");
-	}
-
-	private static void question2() {
-		int numHolidays = 0;
-        int start = 1000 * daysInYear;
-
-        for (int i = 1; i <= daysInYear; i++) {
-            if (colour(start + i) == Colour.GOLD) numHolidays++; 
-        }
-
-        System.out.println(numHolidays + " HOLIDAYS IN YEAR 1,000");
-	}
-
-	private static void question1(int n) {
-		Colour d1 = colour(1);
+    
+    private static void question1(int n) {
+        Colour d1 = colour(1);
         Colour d2 = colour(2);
         Colour d3 = colour(3);
 
@@ -138,5 +117,36 @@ public class ColourOfTheDay2 {
         }
 
         System.out.println("\nNO THREE HOLIDAY IN FIRST " + n + " DAYS");
-	}    
+    }    
+
+    private static void question2() {
+        try {
+            int numHolidays = 0;
+            long start = 1000 * daysInYear;
+
+            for (long i = 1; i <= daysInYear; i++) {
+                if (colour(start + i) == Colour.GOLD) numHolidays++; 
+                System.out.println(i + " " + colour(start + i));
+            }
+            
+            System.out.println(numHolidays + " HOLIDAYS IN YEAR 1,000");
+        } catch (StackOverflowError e) {
+            System.out.println("Stack Overflow error");
+        }
+    }
+
+	private static void question3() {
+		int numHolidays = 0;
+        long start = 10000000L * daysInYear;
+        try {
+            for (long i = 1; i <= daysInYear; i++) {
+                if (colour(start + i) == Colour.GOLD) numHolidays++; 
+            }
+
+            System.out.println(numHolidays + " HOLIDAYS IN YEAR 10,000,000");
+        } catch (StackOverflowError e) {
+            System.out.println("Stack Overflow error");
+        }
+
+	}
 }

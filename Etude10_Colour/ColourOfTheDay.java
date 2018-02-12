@@ -5,7 +5,7 @@ import java.util.*;
  */
 public class ColourOfTheDay {
     static enum Colour { NONE, RED, GREEN, BLUE, GOLD }
-    static final int daysInYear = 350;
+    static final long daysInYear = 350L;
     static Map<Long, Colour> colourOfDay = new HashMap<>(); 
     static Set<Long> primes = new HashSet<>();
     static { primes.add(2L); } 
@@ -72,6 +72,7 @@ public class ColourOfTheDay {
 
         long upper = (long) Math.sqrt(n);
 
+        // Count the colour of the factor days.
         for (long i = 2; i <= upper; i++) {
             if (n % i == 0) {
                 Colour c = colour(i);
@@ -95,30 +96,8 @@ public class ColourOfTheDay {
 		for (long n = 2; n <= 1000; n++) {
             System.out.println(n + " " + colour(n));
         }
-	}
-
-	private static void question3() {
-		long numHolidays = 0;
-        long start = 10000000 * daysInYear;
-
-        for (long i = 1; i <= daysInYear; i++) {
-            if (colour(start + i) == Colour.GOLD) numHolidays++; 
-        }
-
-        System.out.println(numHolidays + " HOLIDAYS IN YEAR 10,000,000");
-	}
-
-	private static void question2() {
-		long numHolidays = 0;
-        long start = 1000 * daysInYear;
-
-        for (long i = 1; i <= daysInYear; i++) {
-            if (colour(start + i) == Colour.GOLD) numHolidays++; 
-        }
-
-        System.out.println(numHolidays + " HOLIDAYS IN YEAR 1,000");
-	}
-
+    }
+    
 	private static void question1(long n) {
 		Colour d1 = colour(1);
         Colour d2 = colour(2);
@@ -138,5 +117,27 @@ public class ColourOfTheDay {
         }
 
         System.out.println("\nNO THREE HOLIDAY IN FIRST " + n + " YEARS");
-	}    
+	}
+    
+        private static void question2() {
+            long numHolidays = 0;
+            long start = 1000 * daysInYear;
+    
+            for (long i = 1; i <= daysInYear; i++) {
+                if (colour(start + i) == Colour.GOLD) numHolidays++; 
+            }
+    
+            System.out.println(numHolidays + " HOLIDAYS IN YEAR 1,000");
+        }
+
+	private static void question3() {
+		long numHolidays = 0;
+        long start = 10000000L * daysInYear;
+
+        for (long i = 1; i <= daysInYear; i++) {
+            if (colour(start + i) == Colour.GOLD) numHolidays++; 
+        }
+
+        System.out.println(numHolidays + " HOLIDAYS IN YEAR 10,000,000");
+	}
 }
