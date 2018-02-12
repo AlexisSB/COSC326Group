@@ -54,7 +54,11 @@ public class ColourOfTheDay {
                 if (red > blue) c = Colour.RED;
                 else c = Colour.BLUE;
             } else {
+<<<<<<< HEAD
                 if (green > blue) c = Colour.GREEN;
+=======
+                if (green > blue) c  = Colour.GREEN;
+>>>>>>> 725e76bedd78bd43401d2e7d5c59882bc40fad0b
                 else c = Colour.BLUE;
             }
         }
@@ -87,7 +91,7 @@ public class ColourOfTheDay {
 	}
 
     public static void main(String[] args) {
-        question1(1000000);
+        question1(10000000);
         question2();
         question3();
     }
