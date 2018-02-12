@@ -2,27 +2,33 @@ package pentominoes;
 
 import java.util.*;
 
-public class Solver {
-
-
+public class SolverB {
     
-    public void solve(Board puzzle) {
-        ArrayDeque<Type> pentominoesToUse= new ArrayDeque<Type>();
-        pentominoesToUse.add(Type.O);
-        pentominoesToUse.add(Type.P);
-        pentominoesToUse.add(Type.Y);
-        pentominoesToUse.add(Type.V);
-        pentominoesToUse.add(Type.X);
-        pentominoesToUse.add(Type.Q);
-        pentominoesToUse.add(Type.R);
-        pentominoesToUse.add(Type.Z);
-        pentominoesToUse.add(Type.U);
-        pentominoesToUse.add(Type.T);
-        pentominoesToUse.add(Type.W);
-        pentominoesToUse.add(Type.S);
+    public void solve(Board puzzle, ArrayDeque<Type> pentominoes) {
+        if (pentominoes.isEmpty()){
+            pentominoes.add(Type.O);
+            pentominoes.add(Type.P);
+            pentominoes.add(Type.Y);
+            pentominoes.add(Type.V);
+            pentominoes.add(Type.X);
+            pentominoes.add(Type.Q);
+            pentominoes.add(Type.R);
+            pentominoes.add(Type.Z);
+            pentominoes.add(Type.U);
+            pentominoes.add(Type.T);
+            pentominoes.add(Type.W);
+            pentominoes.add(Type.S);
+        }
+            System.err.println(pentominoes);         
+            Node root = new Node(puzzle, pentominoes);
+            if(depthFirstSearch(root)){
+                System.out.println(solution);
+            }else{
+                System.out.println("No Solution Found");
+            }
         
-        Node root = new Node(puzzle, pentominoesToUse);
-
+        
+        /*
         Node debugNode;
         ArrayDeque<Type> debugPentominoes = new ArrayDeque<Type>();
         debugPentominoes.add(Type.X);
@@ -41,6 +47,7 @@ public class Solver {
         debugPuzzle.place(0,7,Type.PENTOMINOES.get(Type.V).get(2));
         //System.err.println("DebugPuzzle \n" +debugPuzzle);
         //System.err.println(expandNode(root));
+        */
         /*
         if (solve(puzzle, pentominoesToUse)){
             System.err.println("Success");
@@ -48,10 +55,10 @@ public class Solver {
             System.err.println("Failed");
         }
         */
-        debugNode = new Node(debugPuzzle,debugPentominoes);
-        depthFirstSearch(root);
+        
+        //debugNode = new Node(debugPuzzle,debugPentominoes);
         //depthFirstSearch(root);
-        System.err.println(solution);
+        
     }
 
     Node solution;
@@ -124,22 +131,46 @@ public class Solver {
         
         return output;
     }
-     
+
+    public static ArrayDeque<Type> inputPentominoes(String line){
+        ArrayDeque<Type> output = new ArrayDeque<Type>();
+        String pentominoString = line;
+        Scanner charReader = new Scanner(pentominoString);
+        //System.err.println(pentominoString);
+        //System.err.println(charReader.hasNext());
+        while(charReader.hasNext()){
+            String pentominoChar = (charReader.next());
+            //System.err.println("Pentomino char: " +pentominoChar);
+            Type type = Type.valueOf(pentominoChar.toUpperCase());
+            output.add(type);
+        }
+        System.err.println("Pentominoes : " +output);
+        return output;
+       
+    }
+    
+    public static final Scanner in = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        List<String> puzzle = new ArrayList<>();
         
+        List<String> puzzle = new ArrayList<>();
+        ArrayDeque<Type> inputPentominoes= new ArrayDeque<Type>();
         while (in.hasNextLine()) {
             String line = in.nextLine();
-            
-            if (!line.equals("")) puzzle.add(line);
+            //System.err.println(line);
+            //Sort out the order of reading input.
+            if(line.matches("^[a-z ]+")){
+                System.err.println("Reading pentominoes");
+                inputPentominoes = inputPentominoes(line);
+            }else{
+                if (!line.equals("")) puzzle.add(line);
                         
-            if (line.equals("") || !in.hasNextLine()) {
-                System.err.println(new Board(puzzle));
-               new Solver().solve(new Board(puzzle));
-                puzzle.clear();
+                if (line.equals("") || !in.hasNextLine()) {
+                    System.err.println(new Board(puzzle));
+                    new SolverB().solve(new Board(puzzle),inputPentominoes);
+                    puzzle.clear();
+                }
             }
-            
         }
 
         in.close();
