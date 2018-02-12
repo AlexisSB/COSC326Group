@@ -87,7 +87,7 @@ public class ColourOfTheDay2 {
 	}
 
     public static void main(String[] args) {
-        question1(1000000);
+        question1(25000000);
         question2();
         // question3(); // Produces stack overflow error.
     }
@@ -126,7 +126,6 @@ public class ColourOfTheDay2 {
 
             for (long i = 1; i <= daysInYear; i++) {
                 if (colour(start + i) == Colour.GOLD) numHolidays++; 
-                System.out.println(i + " " + colour(start + i));
             }
             
             System.out.println(numHolidays + " HOLIDAYS IN YEAR 1,000");
