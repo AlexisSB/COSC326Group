@@ -13,18 +13,6 @@ public class Board {
 
     int[][] values;
 
-    /*
-    public Board(Board puzzle){
-        this.values = new int[puzzle.values.length][puzzle.values[0].length];
-        for(int i = 0; i<values.length;i++){
-            for (int j = 0; j <values[i].length; j++){
-                this.values[i][j] = puzzle.values[i][j];
-            }
-        }
-    }
-    */
-
-    
     public Board(List<String> puzzle) {
         this(puzzle.toArray(new String[0]));
     }
@@ -34,11 +22,8 @@ public class Board {
         
         for (int i = 0; i < puzzle.length; i++) {
             for (int j = 0; j < puzzle[i].length(); j++) {
-                //System.err.println(" i : " + i + " j : " + j);
-                //System.err.println(puzzle[i]);
                 values[i][j] = (puzzle[i].charAt(j) == '.') ? EMPTY : INVALID;
             }
-            
         }
     }
     
@@ -106,51 +91,23 @@ public class Board {
      * @return <code>true</code> if the pentomino was successfully placed. 
      * Returns <code>false</code> otherwise.
      * 
-     * @author Anthony Dickson did the good bits, Alexis did the spaghetti.
+     * @author Anthony Dickson.
      */
     public boolean place(int row, int col, Pentomino p) {
-        // Calculate a column Offset to take into account blank spaces.
-        int offset = 6;
-        for(Coordinate c : p.coordinates){
-            if(c.x < offset && c.y == 0){
-                offset = c.x;
-            }
-        }
-        //System.err.print("Offset : " + offset+ "\t");
-        //Good bit
         for (Coordinate c : p.coordinates) {
-            if (!set(row + c.y, col + c.x-offset, p.type)) {
+            if (!set(row + c.y, col + c.x, p.type)) {
                 remove(row, col, p);
                 return false;
             }
         }
-        //currentPentominoes.add(p);
+
         return true;
     }
 
-    public int[] getFirstBlankPlace(){
-        for(int row = 0; row < values.length; row++){
-            for(int col = 0; col < values[row].length ; col++){
-                if(get(row,col) == EMPTY){
-                    int[] output = {row,col};
-                    return output;
-                }
-            }
-        }
-        return null;
-    }
-    
+
     public boolean canPlace(int row, int col, Pentomino p) {
-        int offset = 6;
-        for(Coordinate c : p.coordinates){
-            if(c.x < offset && c.y == 0){
-                offset = c.x;
-            }
-        }
-        //System.err.print("Offset : " + offset + "\t");
-        
         for (Coordinate c : p.coordinates) {
-            if (get(row + c.y, col + c.x-offset) != EMPTY) {
+            if (get(row + c.y, col + c.x) != EMPTY) {
                 return false;
             }
         }
@@ -179,18 +136,6 @@ public class Board {
             }
         }
     }
-
-    ArrayDeque<Pentomino> currentPentominoes = new ArrayDeque<Pentomino>();;
-
-    public Pentomino removeLast(){
-        if (currentPentominoes.isEmpty()){
-            return null;
-        }
-        Pentomino p = currentPentominoes.pop();
-        remove(p);
-        return p;
-    }
-    
     
     @Override
     public String toString() {
