@@ -87,7 +87,7 @@ public class ColourOfTheDay2 {
 	}
 
     public static void main(String[] args) {
-        question1(25000000);
+        question1(1000000);
         question2();
         // question3(); // Produces stack overflow error.
     }
@@ -122,7 +122,7 @@ public class ColourOfTheDay2 {
     private static void question2() {
         try {
             int numHolidays = 0;
-            long start = 1000 * daysInYear;
+            long start = 999L * daysInYear;
 
             for (long i = 1; i <= daysInYear; i++) {
                 if (colour(start + i) == Colour.GOLD) numHolidays++; 
@@ -136,7 +136,8 @@ public class ColourOfTheDay2 {
 
 	private static void question3() {
 		int numHolidays = 0;
-        long start = 10000000L * daysInYear;
+        long start = 9999999L * daysInYear;
+        
         try {
             for (long i = 1; i <= daysInYear; i++) {
                 if (colour(start + i) == Colour.GOLD) numHolidays++; 
