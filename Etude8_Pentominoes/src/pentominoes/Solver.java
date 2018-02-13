@@ -12,6 +12,7 @@ public class Solver {
      * Solve manages the creation of root node and depth first search.
      * If there are not pentominoes read in then the standard
      * set of 12 will be used.
+     * 
      * @param puzzle - the board to solve.
      * @param pentominoes - a list of pentominoes to use.
      */
@@ -31,27 +32,26 @@ public class Solver {
             pentominoes.add(Type.S);
         }
         
-            Node root = new Node(puzzle, pentominoes);
-            //System.err.println(depthFirstSearch(root));
-            if(depthFirstSearch(root)){
-                System.out.println(solution.puzzle);
-            }else{
-                System.out.println("No Solution");
-            }
-             
+        Node root = new Node(puzzle, pentominoes);
+        
+        if (depthFirstSearch(root)) {
+            System.out.println(solution.puzzle);
+        } else {
+            System.out.println("No Solution");
+        }
     }
-
 
     /**
      * Recursive depth first search of the puzzle space.
      * Calls helper method DFSVisit.
-     * @param root - start of the search tree.
+     * 
+     * @param root start of the search tree.
      * @return true if a solution found, false if no solution.
      */
     public boolean depthFirstSearch(Node root){
-        if( DFSVisit(root)){
+        if( DFSVisit(root)) {
             return true;
-        }else{
+        } else {
             System.err.println("Failed");
             return false;
         }
@@ -63,7 +63,8 @@ public class Solver {
      * Checks the goal condition first.
      * In this case the goal condition is that there are no more
      * spaces to place a pentomino on the board i.e. its full.
-     * @param node - the node to explore.
+     * 
+     * @param node the node to explore.
      * @return true if the node meets the goal condition, false if no solution.
      */
     public boolean DFSVisit(Node node){
@@ -72,8 +73,8 @@ public class Solver {
             solution = node;
             return true;
         }
-        ArrayList<Node> children = expandNode(node);
-        for(Node child : children){
+
+        for(Node child : expandNode(node)){
             if(!child.visited){
                 if(DFSVisit(child)){
                     return true;
@@ -87,18 +88,17 @@ public class Solver {
      * Explores the possible successors to a node.
      * Takes each pentomino from the node list and adds it to
      * the node board state at the first blank space to generate new nodes.
-     * @param n - node to expand
+     * 
+     * @param n node to expand
      * @return an ArrayList of the child nodes.
      */
     public ArrayList<Node> expandNode(Node n){
-
         Coordinate startLocation = n.puzzle.getFirstBlankPlace();
         int row = startLocation.y;
         int col = startLocation.x;
-
         ArrayList<Node> output = new ArrayList<Node>();
 
-        for(Type type :n.leftOverPentominoes){
+        for(Type type : n.leftOverPentominoes){
             for(Pentomino p : Type.PENTOMINOES.get(type)){
                 if(n.puzzle.canPlace(row,col,p)){
                     Board clone = new Board(n.puzzle);
@@ -106,8 +106,7 @@ public class Solver {
                     ArrayList<Type> clonedPento = new ArrayList<Type>();
                     clonedPento.addAll(n.leftOverPentominoes);
                     clonedPento.remove(type);
-                    Node child = new Node(clone,clonedPento);
-                    output.add(child);
+                    output.add(new Node(clone,clonedPento));
                 }
 
             }
@@ -120,6 +119,7 @@ public class Solver {
      * Convert a line of char from the input into pentomino types.
      * List of types represents the pentominoes to be used in the
      * puzzle.
+     * 
      * @param line - line of single characters o-z space seperated.
      * @return Collection of pentomino Types.
      */
@@ -128,7 +128,7 @@ public class Solver {
         String pentominoString = line;
         Scanner charReader = new Scanner(pentominoString);
 
-        while(charReader.hasNext()){
+        while(charReader.hasNext()) {
             String pentominoChar = (charReader.next());
 
             Type type = Type.valueOf(pentominoChar.toUpperCase());
@@ -141,6 +141,7 @@ public class Solver {
      * Main method.
      * Reads in the list of pentominoes and the board description.
      * Passes this to the solve method for inspection.
+     * 
      * @param args - no arguments used in this class.
      */
     public static void main(String[] args) {
@@ -150,16 +151,14 @@ public class Solver {
         while (in.hasNextLine()) {
             String line = in.nextLine();
 
-
-            if(line.matches("^[a-z ]+")){
-
+            if(line.matches("^[a-z ]+")) {
                 inputPentominoes = inputPentominoes(line);
-            }else{
+            } else {
                 if (!line.equals("")) puzzle.add(line);
                         
                 if (line.equals("") || !in.hasNextLine()) {
                     System.err.println(new Board(puzzle));
-                    new Solver().solve(new Board(puzzle),inputPentominoes);
+                    new Solver().solve(new Board(puzzle), inputPentominoes);
                     puzzle.clear();
                 }
             }

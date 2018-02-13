@@ -4,8 +4,6 @@ import java.util.*;
 
 /**
  * Represents a board for a pentomino puzzle.
- * 
- * @author Anthony Dickson.
  */
 public class Board {
     static final int INVALID = -2;
@@ -20,13 +18,10 @@ public class Board {
     public Board(String... puzzle) {
         values = new int[puzzle.length][puzzle[0].length()];
         
-        for (int i = 0; i < puzzle.length; i++) {
-            for (int j = 0; j < puzzle[i].length(); j++) {
-                //System.err.println(" i : " + i + " j : " + j);
-                //System.err.println(puzzle[i]);
-                values[i][j] = (puzzle[i].charAt(j) == '.') ? EMPTY : INVALID;
+        for (int row = 0; row < puzzle.length; row++) {
+            for (int col = 0; col < puzzle[row].length(); col++) {
+                values[row][col] = (puzzle[row].charAt(col) == '.') ? EMPTY : INVALID;
             }
-            
         }
     }
     
@@ -43,8 +38,6 @@ public class Board {
      * @return The value at <code>row</code>, <code>col</code>. Returns invalid
      * if the value of the cell was <code>INVALID</code> or indicies were out 
      * of bounds.
-     * 
-     * @author Anthony Dickson.
      */
     public int get(int row, int col) {
         try {
@@ -66,8 +59,6 @@ public class Board {
      * @return <code>true</code> if the value was successfully set. 
      * Returns <code>false</code> if indicies are out of bounds, the cell
      * is not empty, or the cell is invalid.
-     * 
-     * @author Anthony Dickson.
      */
     public boolean set(int row, int col, Type type) {
         try {
@@ -93,56 +84,64 @@ public class Board {
      * @param p The pentomino to place.
      * @return <code>true</code> if the pentomino was successfully placed. 
      * Returns <code>false</code> otherwise.
-     * 
-     * @author Anthony Dickson did the good bits, Alexis did the spaghetti.
      */
     public boolean place(int row, int col, Pentomino p) {
         // Calculate a column offset to take into account blank spaces.
-        int offset = Integer.MAX_VALUE;;
+        int offset = Integer.MAX_VALUE;
+
         for(Coordinate c : p.coordinates){
             if(c.x < offset && c.y == 0){
                 offset = c.x;
             }
         }
-        //System.err.print("Offset : " + offset+ "\t");
-        //Good bit
+
         for (Coordinate c : p.coordinates) {
-            if (!set(row + c.y, col + c.x-offset, p.type)) {
+            if (!set(row + c.y, col + c.x - offset, p.type)) {
                 remove(row, col, p);
                 return false;
             }
         }
-        //currentPentominoes.add(p);
+
         return true;
     }
 
     /**
      * Finds the first blank space in the current state of the board.
      * Scans each row left to right to find a space.
+     * 
      * @return a coordinate specifying the location of the first space.
      */
     public Coordinate getFirstBlankPlace(){
-        for(int row = 0; row < values.length; row++){
-            for(int col = 0; col < values[row].length ; col++){
-                if(get(row,col) == EMPTY){
-                    Coordinate output = new Coordinate(col,row);
-                    return output;
+        for(int row = 0; row < values.length; row++) {
+            for(int col = 0; col < values[row].length ; col++) {
+                if(get(row, col) == EMPTY) {
+                    return new Coordinate(col, row);
                 }
             }
         }
+
         return null;
     }
     
+    /**
+     * Check if pentomino <code>p</code> can be placed at <code>row</code>, 
+     * <code>col</code>.
+     * 
+     * @param row The row to place the pentomino at.
+     * @param col The col to place the pentomino at.
+     * @param p The pentomino to place.
+     */
     public boolean canPlace(int row, int col, Pentomino p) {
         int offset = Integer.MAX_VALUE;
+
         for(Coordinate c : p.coordinates){
-            if(c.x < offset && c.y == 0){
+            if (c.x < offset && c.y == 0){
                 offset = c.x;
             }
         }
                
         for (Coordinate c : p.coordinates) {
-            if (get(row + c.y, col + c.x-offset) != EMPTY) {
+            if (get(row + c.y, col + c.x - offset) != EMPTY) {
                 return false;
             }
         }
@@ -150,6 +149,14 @@ public class Board {
         return true;
     }
 
+    /**
+     * Removes <code>p</code> from the position <code>row</code>, 
+     * <code>col</code> on the board.
+     * 
+     * @param row The row to remove from.
+     * @param col The col to remove from.
+     * @param p The pentomino to remove.
+     */
     public void remove(int row, int col, Pentomino p) {
         for (Coordinate c : p.coordinates) {
             try {
@@ -162,6 +169,11 @@ public class Board {
         }
     }
 
+    /** 
+     * Clears the squares on the board that are equal to the type of the passed in pentomino. 
+     *
+     * @param p The pentomino to remove from the board. 
+     */
     public void remove(Pentomino p) {
         for (int[] row : values) {
             for (int col = 0; col < row.length; col++) {

@@ -8,21 +8,21 @@ import java.util.*;
  * pentominoes placed on it, and a list of the pentominoes
  * that are left to place on the board.
  */
-public class Node{
-
+public class Node {
     Board puzzle;
     ArrayList<Type> leftOverPentominoes = new ArrayList<Type>();
     boolean visited = false;
     
-    public Node(Board puzzle, ArrayList<Type> leftOverPentominoes){
+    public Node(Board puzzle, ArrayList<Type> leftOverPentominoes) {
         this.puzzle = puzzle;
         this.leftOverPentominoes = leftOverPentominoes;
     }
 
-    public String toString(){
+    @Override
+    public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("\n" +puzzle.toString()+ "\n");
-        output.append(leftOverPentominoes+ "\n");
+        output.append("\n" + puzzle.toString() + "\n");
+        output.append(leftOverPentominoes + "\n");
         return output.toString();
     }
 
