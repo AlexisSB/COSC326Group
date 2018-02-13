@@ -12,19 +12,7 @@ public class Board {
     static final int EMPTY = -1;
 
     int[][] values;
-
-    /*
-    public Board(Board puzzle){
-        this.values = new int[puzzle.values.length][puzzle.values[0].length];
-        for(int i = 0; i<values.length;i++){
-            for (int j = 0; j <values[i].length; j++){
-                this.values[i][j] = puzzle.values[i][j];
-            }
-        }
-    }
-    */
-
-    
+ 
     public Board(List<String> puzzle) {
         this(puzzle.toArray(new String[0]));
     }
@@ -109,8 +97,8 @@ public class Board {
      * @author Anthony Dickson did the good bits, Alexis did the spaghetti.
      */
     public boolean place(int row, int col, Pentomino p) {
-        // Calculate a column Offset to take into account blank spaces.
-        int offset = 6;
+        // Calculate a column offset to take into account blank spaces.
+        int offset = Integer.MAX_VALUE;;
         for(Coordinate c : p.coordinates){
             if(c.x < offset && c.y == 0){
                 offset = c.x;
@@ -128,11 +116,16 @@ public class Board {
         return true;
     }
 
-    public int[] getFirstBlankPlace(){
+    /**
+     * Finds the first blank space in the current state of the board.
+     * Scans each row left to right to find a space.
+     * @return a coordinate specifying the location of the first space.
+     */
+    public Coordinate getFirstBlankPlace(){
         for(int row = 0; row < values.length; row++){
             for(int col = 0; col < values[row].length ; col++){
                 if(get(row,col) == EMPTY){
-                    int[] output = {row,col};
+                    Coordinate output = new Coordinate(col,row);
                     return output;
                 }
             }
@@ -141,14 +134,13 @@ public class Board {
     }
     
     public boolean canPlace(int row, int col, Pentomino p) {
-        int offset = 6;
+        int offset = Integer.MAX_VALUE;
         for(Coordinate c : p.coordinates){
             if(c.x < offset && c.y == 0){
                 offset = c.x;
             }
         }
-        //System.err.print("Offset : " + offset + "\t");
-        
+               
         for (Coordinate c : p.coordinates) {
             if (get(row + c.y, col + c.x-offset) != EMPTY) {
                 return false;
@@ -179,19 +171,7 @@ public class Board {
             }
         }
     }
-
-    ArrayDeque<Pentomino> currentPentominoes = new ArrayDeque<Pentomino>();;
-
-    public Pentomino removeLast(){
-        if (currentPentominoes.isEmpty()){
-            return null;
-        }
-        Pentomino p = currentPentominoes.pop();
-        remove(p);
-        return p;
-    }
-    
-    
+      
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
